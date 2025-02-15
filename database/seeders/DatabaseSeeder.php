@@ -37,6 +37,10 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        $this->call([
+            CategorySeeder::class,
+        ]);
+
         // Create sample course
         Course::create([
             'title' => 'Sample Course',
@@ -46,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'video_type' => 'youtube',
             'video_url' => 'https://youtube.com/watch?v=sample',
             'is_public' => true,
+            'category_id' => 1,
         ]);
     }
 } 

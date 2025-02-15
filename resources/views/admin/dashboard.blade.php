@@ -1,22 +1,19 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
-    </x-slot>
+<x-admin-layout>
+    @section('header')
+        Dashboard
+    @endsection
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <!-- Total Users Card -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-500 bg-opacity-75">
-                                <svg class="h-8 w-8 text-white" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M18.2 7.5C18.2 11.0899 15.0899 14.2 11.5 14.2C7.91015 14.2 4.8 11.0899 4.8 7.5C4.8 3.91015 7.91015 0.8 11.5 0.8C15.0899 0.8 18.2 3.91015 18.2 7.5Z" stroke="currentColor" stroke-width="1.5"/>
-                                    <path d="M23 28.5C23 29.3284 22.3284 30 21.5 30H1.5C0.671573 30 0 29.3284 0 28.5C0 23.8056 3.80558 20 8.5 20H14.5C19.1944 20 23 23.8056 23 28.5Z" fill="currentColor"/>
+                            <div class="p-3 rounded-full bg-indigo-500 bg-opacity-75">
+                                <svg class="h-8 w-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             <div class="mx-5">
@@ -33,7 +30,7 @@
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-green-500 bg-opacity-75">
                                 <svg class="h-8 w-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M26.25 2.625H1.75C0.783502 2.625 0 3.4085 0 4.375V23.625C0 24.5915 0.783502 25.375 1.75 25.375H26.25C27.2165 25.375 28 24.5915 28 23.625V4.375C28 3.4085 27.2165 2.625 26.25 2.625Z" fill="currentColor"/>
+                                    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             <div class="mx-5">
@@ -48,9 +45,9 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-yellow-500 bg-opacity-75">
+                            <div class="p-3 rounded-full bg-blue-500 bg-opacity-75">
                                 <svg class="h-8 w-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M14 0C6.26875 0 0 6.26875 0 14C0 21.7313 6.26875 28 14 28C21.7313 28 28 21.7313 28 14C28 6.26875 21.7313 0 14 0ZM21 15H15V21H13V15H7V13H13V7H15V13H21V15Z" fill="currentColor"/>
+                                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             <div class="mx-5">
@@ -65,9 +62,9 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-red-500 bg-opacity-75">
+                            <div class="p-3 rounded-full bg-yellow-500 bg-opacity-75">
                                 <svg class="h-8 w-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M14 0C6.26875 0 0 6.26875 0 14C0 21.7313 6.26875 28 14 28C21.7313 28 28 21.7313 28 14C28 6.26875 21.7313 0 14 0ZM15.5 19.25H12.5V8.75H15.5V19.25Z" fill="currentColor"/>
+                                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             <div class="mx-5">
@@ -79,44 +76,42 @@
                 </div>
             </div>
 
-            <!-- Recent Activities -->
+            <!-- Recent Activity -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Activities</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-500 uppercase tracking-wider">User</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-500 uppercase tracking-wider">Action</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-500 uppercase tracking-wider">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Sample Data - Replace with actual data -->
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                                        <div class="flex items-center">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+                    </div>
+                    <div class="flow-root">
+                        <ul role="list" class="-mb-8">
+                            <li>
+                                <div class="relative pb-8">
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                    <div class="relative flex space-x-3">
+                                        <div>
+                                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                             <div>
-                                                <div class="text-sm leading-5 font-medium text-gray-900">John Doe</div>
-                                                <div class="text-sm leading-5 text-gray-500">john@example.com</div>
+                                                <p class="text-sm text-gray-500">New course <span class="font-medium text-gray-900">Web Development Bootcamp</span> was created</p>
+                                            </div>
+                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                <time datetime="2023-01-23">3h ago</time>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            Enrolled in Course
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500 text-sm leading-5 text-gray-500">
-                                        {{ now()->format('M d, Y H:i') }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Add more activity items as needed -->
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-admin-layout> 

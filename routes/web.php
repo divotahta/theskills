@@ -5,6 +5,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 // Rute untuk semua pengguna
 Route::get('/', function () {
@@ -32,6 +33,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         
         return view('admin.dashboard', compact('totalUsers', 'totalCourses', 'totalEnrollments', 'totalRevenue'));
     })->name('admin.dashboard');
+
+    Route::get('/courses/create', [App\Http\Controllers\Admin\CourseController::class, 'create'])
+        ->name('admin.courses.create');
+    
+    Route::post('/courses', [App\Http\Controllers\Admin\CourseController::class, 'store'])
+        ->name('admin.courses.store');
+    
+    Route::get('/courses', [App\Http\Controllers\Admin\CourseController::class, 'index'])
+        ->name('admin.courses.index');
 });
 
 // Rute untuk instructor
@@ -47,6 +57,15 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(func
         
         return view('instructor.dashboard', compact('totalCourses', 'totalStudents', 'totalRevenue'));
     })->name('instructor.dashboard');
+
+    Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])
+        ->name('instructor.courses.create');
+    
+    Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])
+        ->name('instructor.courses.store');
+    
+    Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])
+        ->name('instructor.courses.index');
 });
 
 // Rute untuk student
@@ -62,6 +81,17 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->group(function (
         
         return view('student.dashboard', compact('enrolledCourses', 'completedCourses', 'totalCertificates'));
     })->name('student.dashboard');
+
+    Route::get('/courses', function () {
+        $enrolledCourses = \App\Models\Enrollment::where('user_id', Auth::id())
+            ->with(['course' => function($q) {
+                $q->with('instructor');
+            }])
+            ->latest()
+            ->get();
+            
+        return view('student.courses.index', compact('enrolledCourses'));
+    })->name('student.courses.index');
 });
 
 // Rute autentikasi (login, register, dll.)

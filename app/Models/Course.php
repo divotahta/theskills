@@ -15,4 +15,14 @@ class Course extends Model
         'video_url',
         'is_public'
     ];
+
+    public function topics()
+    {
+        return $this->hasMany(Topic::class)->orderBy('order');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 } 

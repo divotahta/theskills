@@ -17,9 +17,11 @@ return new class extends Migration
             $table->enum('video_type', ['native', 'youtube', 'vimeo'])->nullable();
             $table->string('video_url', 255)->nullable();
             $table->boolean('is_public')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->timestamps();
 
             $table->foreign('instructor_id')->references('id')->on('users');
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
