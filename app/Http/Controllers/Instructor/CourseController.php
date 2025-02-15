@@ -81,6 +81,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::where('instructor_id', Auth::id())
+            // ->withCount('enrollments')
             ->with('category')
             ->latest()
             ->paginate(10);

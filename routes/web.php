@@ -66,6 +66,10 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(func
     
     Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])
         ->name('instructor.courses.index');
+
+    Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])
+        ->name('instructor.courses.edit');
+
 });
 
 // Rute untuk student

@@ -1,15 +1,31 @@
 <x-instructor-layout>
-    @section('header')
-        Create New Course
-    @endsection
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center">
+                    <div class="flex items-center w-2/3">
+                        <button type="button" class="step-button active" data-step="1">
+                            <span class="step-circle">1</span>
+                            <span class="step-text">Basics</span>
+                        </button>
+                        <div class="step-line"></div>
+                        <button type="button" class="step-button" data-step="2">
+                            <span class="step-circle">2</span>
+                            <span class="step-text">Curriculum</span>
+                        </button>
+                        <div class="step-line"></div>
+                        <button type="button" class="step-button" data-step="3">
+                            <span class="step-circle">3</span>
+                            <span class="step-text">Additional</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" id="courseForm">
                 @csrf
                 
-                <x-course-builder-progress :currentStep="1" />
-
                 <!-- Step 1: Basics -->
                 <div class="step-content" id="step1">
                     <!-- Basic Information -->
@@ -43,9 +59,7 @@
                             <div>
                                 <label for="difficulty_level" class="block text-sm font-medium text-gray-700">Difficulty Level</label>
                                 <select name="difficulty_level" id="difficulty_level" 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                        required>
-                                    <option value="">Select Level</option>
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
@@ -67,82 +81,49 @@
                     <!-- Media -->
                     <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Media</h2>
-                        
-                        <!-- Featured Image -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
-                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative">
-                                <div id="imagePreview" class="hidden absolute inset-0 bg-white">
-                                    <img src="" alt="Preview" class="mx-auto h-48 w-auto object-contain">
-                                    <button type="button" id="removeImage" 
-                                            class="absolute top-2 right-2 p-1 bg-red-100 text-red-600 rounded-full hover:bg-red-200">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" 
-                                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600">
-                                        <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                            <span>Upload a file</span>
-                                            <input id="thumbnail" name="thumbnail" type="file" class="sr-only" accept="image/*">
-                                        </label>
+                        <div class="space-y-6">
+                            <!-- Featured Image -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Featured Image</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative">
+                                    <div id="imagePreview" class="hidden absolute inset-0 bg-white">
+                                        <img src="" alt="Preview" class="mx-auto h-48 w-auto object-contain">
+                                        <button type="button" id="removeImage" 
+                                                class="absolute top-2 right-2 p-1 bg-red-100 text-red-600 rounded-full hover:bg-red-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" 
+                                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload a file</span>
+                                                <input id="thumbnail" name="thumbnail" type="file" class="sr-only" accept="image/*">
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Intro Video -->
-                        <div class="space-y-4">
+                            <!-- Intro Video -->
                             <div>
-                                <label for="video_type" class="block text-sm font-medium text-gray-700">Video Type</label>
-                                <select name="video_type" id="video_type" 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="youtube">YouTube</option>
-                                    <option value="vimeo">Vimeo</option>
-                                    <option value="native">Upload Video</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="video_url" class="block text-sm font-medium text-gray-700">Video URL</label>
+                                <label for="video_url" class="block text-sm font-medium text-gray-700">Intro Video URL</label>
                                 <input type="url" name="video_url" id="video_url" 
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                       placeholder="YouTube or Vimeo URL">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Pricing & Categories -->
+                    <!-- Categories & Tags -->
                     <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
-                        <h2 class="text-lg font-medium text-gray-900 mb-4">Course Details</h2>
-                        
-                        <!-- Pricing -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Pricing Model</label>
-                            <div class="flex items-center space-x-4">
-                                <div class="flex items-center">
-                                    <input type="radio" name="pricing_type" id="pricing_free" value="free" 
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                    <label for="pricing_free" class="ml-2 text-sm text-gray-700">Free</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="radio" name="pricing_type" id="pricing_paid" value="paid" 
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" checked>
-                                    <label for="pricing_paid" class="ml-2 text-sm text-gray-700">Paid</label>
-                                </div>
-                            </div>
-                            <div id="price_input" class="mt-4">
-                                <label for="price" class="block text-sm font-medium text-gray-700">Course Price ($)</label>
-                                <input type="number" name="price" id="price" step="0.01" min="0" 
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                        </div>
-
-                        <!-- Categories & Tags -->
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Categories & Tags</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
@@ -177,6 +158,47 @@
             </form>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        // Image Preview Handler
+        const thumbnailInput = document.getElementById('thumbnail');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = imagePreview.querySelector('img');
+        const removeImageBtn = document.getElementById('removeImage');
+
+        thumbnailInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size should be less than 2MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeImageBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            thumbnailInput.value = '';
+            imagePreview.classList.add('hidden');
+            previewImage.src = '';
+        });
+    </script>
+    @endpush
 
     @push('styles')
     <style>
@@ -216,11 +238,5 @@
             object-fit: contain;
         }
     </style>
-    @endpush
-
-    @push('scripts')
-    <script>
-        // ... script yang sudah ada ...
-    </script>
     @endpush
 </x-instructor-layout>
