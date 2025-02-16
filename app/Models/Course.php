@@ -20,6 +20,11 @@ class Course extends Model
         'max_students'
     ];
 
+    public function instructor()
+    {
+        return $this->belongsTo(User::class, 'instructor_id');
+    }
+
     public function topics()
     {
         return $this->hasMany(Topic::class)->orderBy('order');
