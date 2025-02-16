@@ -1,66 +1,58 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a href="https://theskills.id" target="_blank"><img src="https://raw.githubusercontent.com/theskills/logo/master/theskills-logo.svg" width="400" alt="TheSkills Logo"></a></p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<a href="https://github.com/theskills/education/actions"><img src="https://github.com/theskills/education/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://theskills.id"><img src="https://img.shields.io/badge/students-1000%2B-blue" alt="Total Students"></a>
+<a href="https://theskills.id"><img src="https://img.shields.io/badge/courses-20%2B-green" alt="Total Courses"></a>
+<a href="https://theskills.id"><img src="https://img.shields.io/badge/license-MIT-yellow" alt="License"></a>
 </p>
 
-## About Laravel
+## Tentang TheSkills
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+TheSkills adalah platform edukasi yang menghadirkan kelas koding dan matematika untuk anak-anak di Jember. Kami percaya bahwa belajar harus menyenangkan, kreatif, dan inspiratif. TheSkills membantu anak-anak memahami logika pemrograman serta konsep matematika dengan cara yang interaktif dan mudah dipahami.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Beberapa keunggulan TheSkills:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Kurikulum interaktif berbasis proyek](https://theskills.id/kurikulum).
+- [Instruktur berpengalaman dan bersertifikat](https://theskills.id/tim-pengajar).
+- Metode pembelajaran yang [menyenangkan dan mudah dipahami](https://theskills.id/metode-belajar).
+- Kelas online dan offline yang fleksibel.
+- [Komunitas belajar yang mendukung](https://theskills.id/komunitas).
 
-## Learning Laravel
+TheSkills hadir untuk membantu anak-anak menguasai keterampilan abad ke-21 dengan mudah dan menyenangkan.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Belajar di TheSkills
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Kami menyediakan berbagai sumber belajar, termasuk dokumentasi yang lengkap, tutorial video, dan sesi pelatihan langsung agar anak-anak dapat belajar dengan nyaman dan efektif.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Anda dapat mencoba [Kelas Percobaan Gratis](https://theskills.id/trial) untuk merasakan pengalaman belajar di TheSkills.
 
-## Laravel Sponsors
+Jika ingin belajar lebih dalam, kunjungi [TheSkills Bootcamp](https://bootcamp.theskills.id), di mana anak-anak akan dibimbing dalam membangun proyek nyata dari nol.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Sponsor dan Mitra
 
-### Premium Partners
+Kami berterima kasih kepada mitra yang mendukung pengembangan TheSkills. Jika Anda tertarik untuk bermitra, silakan kunjungi halaman [Kemitraan TheSkills](https://theskills.id/kemitraan).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Mitra Premium
 
-## Contributing
+- **[EduTech Jember](https://edutech-jember.id/)**
+- **[SmartKids Academy](https://smartkidsacademy.com/)**
+- **[MathLab](https://mathlab.id/)**
+- **[Code4Kids](https://code4kids.id/)**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Berkontribusi
 
-## Code of Conduct
+Kami selalu terbuka terhadap kontribusi dari komunitas! Panduan kontribusi dapat ditemukan di [dokumentasi TheSkills](https://theskills.id/kontribusi).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Kode Etik
 
-## Security Vulnerabilities
+Untuk memastikan lingkungan belajar yang nyaman bagi semua, harap ikuti [Kode Etik TheSkills](https://theskills.id/kode-etik).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Keamanan dan Privasi
 
-## License
+Jika Anda menemukan masalah keamanan, silakan hubungi kami melalui email di [security@theskills.id](mailto:security@theskills.id). Kami akan segera menangani laporan tersebut.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Lisensi
+
+TheSkills adalah platform edukasi berbasis open-source yang dilisensikan di bawah [MIT license](https://opensource.org/licenses/MIT).
+
