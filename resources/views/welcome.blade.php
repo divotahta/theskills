@@ -19,14 +19,14 @@
                            class="px-6 py-3 bg-transparent border-2 border-white rounded-lg font-semibold hover:bg-white/10 transition">
                             Hubungi Kami
                         </a>
-                    </div>
-                </div>
+                                </div>
+                                        </div>
                 <div class="hidden lg:block ">
                     <img src="{{ asset('images/homepage.png') }}" alt="Kids Learning" class="h-[450px] ">
-                </div>
-            </div>
-        </div>
-    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
 
     <!-- Features Section -->
     <div class="py-20 bg-white">
@@ -35,9 +35,9 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-4">Mengapa Memilih TheSkills.id?</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                     Kami menyediakan pembelajaran yang interaktif dan menyenangkan untuk anak-anak
-                </p>
-            </div>
-            
+                                    </p>
+                                </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="p-6 bg-gray-50 rounded-xl">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
@@ -57,7 +57,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-2">Instruktur Berpengalaman</h3>
                     <p class="text-gray-600">Tim pengajar yang profesional dan berpengalaman dalam mengajar anak-anak</p>
-                </div>
+                                </div>
 
                 <div class="p-6 bg-gray-50 rounded-xl">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
@@ -79,8 +79,8 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-4">Program Pembelajaran</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                     Pilih program pembelajaran sesuai minat dan kebutuhan anak
-                </p>
-            </div>
+                                    </p>
+                                </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white rounded-xl overflow-hidden shadow-sm">
@@ -131,7 +131,7 @@
                             <li class="flex items-center text-gray-600">
                                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                    </svg>
                                 Problem Solving
                             </li>
                         </ul>
@@ -142,7 +142,7 @@
                 </div>
             </div>
         </div>
-    </div>
+                                </div>
 
     <!-- Contact Section -->
     <div id="contact" class="py-20 bg-white">
@@ -172,7 +172,7 @@
                                 <h3 class="font-semibold text-gray-900">Email</h3>
                                 <p class="text-gray-600">info@theskills.id</p>
                             </div>
-                        </div>
+                                </div>
                         <div class="flex items-start">
                             <svg class="w-6 h-6 text-blue-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />

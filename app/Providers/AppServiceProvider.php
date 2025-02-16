@@ -21,5 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::component('admin-layout', \App\View\Components\AdminLayout::class);
+        Blade::component('instructor-layout', \App\View\Components\InstructorLayout::class);
     }
 }

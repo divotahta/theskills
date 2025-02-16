@@ -10,6 +10,8 @@ use App\Http\Controllers\Instructor\CategoryController;
 use App\Http\Controllers\Instructor\CourseController;
 use App\Http\Controllers\CourseController as PublicCourseController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Instructor\DashboardController;
+use App\Http\Controllers\Instructor\ProfileController as InstructorProfileController;
 
 // Public routes
 Route::get('/', function () {
@@ -53,9 +55,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 // Instructor routes
 Route::middleware(['auth', 'role:instructor'])->group(function () {
-    Route::get('/instructor/dashboard', function () {
-        return view('instructor.dashboard');
-    })->name('instructor.dashboard');
+    Route::get('/instructor/dashboard', [DashboardController::class, 'index'])->name('instructor.dashboard');
+    Route::get('/instructor/profile', [InstructorProfileController::class, 'edit'])->name('instructor.profile.edit');
+    Route::put('/instructor/profile', [InstructorProfileController::class, 'update'])->name('instructor.profile.update');
 });
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
     // Course routes - hanya gunakan method yang diperlukan

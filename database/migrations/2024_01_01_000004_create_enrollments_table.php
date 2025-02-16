@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,6 +14,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('course_id')->nullable();
             $table->enum('status', ['active', 'completed'])->nullable();
+            $table->decimal('price', 10, 2)->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
@@ -25,3 +27,5 @@ return new class extends Migration
         Schema::dropIfExists('enrollments');
     }
 }; 
+            
+    

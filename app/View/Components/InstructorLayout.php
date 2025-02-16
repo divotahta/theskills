@@ -8,6 +8,6 @@ class InstructorLayout extends Component
 {
     public function render()
     {
-        return view('layouts.instructor');
+        return view('components.instructor-layout');
     }
 } 
