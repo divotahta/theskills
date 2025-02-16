@@ -28,12 +28,6 @@
                                 <span class="ml-1">Additional</span>
                             </button>
                         </nav>
-                        <button type="button" class="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-                            <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            Generate with AI
-                        </button>
                     </div>
                     <div class="flex items-center space-x-4">
                         <button type="submit" name="status" value="draft" form="courseForm"
@@ -48,6 +42,22 @@
                                 class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
                             Publish
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="bg-white shadow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="py-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 text-sm text-gray-600">
+                        <span>Basic</span>
+                        <span>Curriculum</span>
+                        <span>Additional</span>
                     </div>
                 </div>
             </div>
@@ -94,28 +104,8 @@
                                         Description
                                         <span class="text-red-500">*</span>
                                     </label>
-                                    <div class="flex items-center space-x-2">
-                                        <button type="button" class="px-3 py-1 text-sm font-medium rounded-md bg-gray-100 text-gray-700">Visual</button>
-                                        <button type="button" class="px-3 py-1 text-sm font-medium rounded-md text-gray-500">Text</button>
-                                    </div>
                                 </div>
-                                <div class="border rounded-lg">
-                                    <!-- Rich Text Editor Toolbar -->
-                                    <div class="border-b px-3 py-2 flex items-center space-x-2">
-                                        <select class="text-sm border-gray-300 rounded-md">
-                                            <option>Paragraph</option>
-                                        </select>
-                                        <div class="flex items-center space-x-1 border-l pl-2">
-                                            <button type="button" class="p-1 hover:bg-gray-100 rounded">B</button>
-                                            <button type="button" class="p-1 hover:bg-gray-100 rounded italic">I</button>
-                                            <button type="button" class="p-1 hover:bg-gray-100 rounded underline">U</button>
-                                        </div>
-                                    </div>
-                                    <!-- Editor Content -->
-                                    <div class="p-3">
-                                        <textarea rows="8" class="w-full border-0 focus:ring-0 p-0" placeholder="Write your course description..."></textarea>
-                                    </div>
-                                </div>
+                                <textarea name="description" id="description" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                             </div>
                         </div>
 
@@ -140,7 +130,10 @@
                                         </svg>
                                     </label>
                                     <select class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option>Beginner</option>
                                         <option>Intermediate</option>
+                                        <option>Advanced</option>
+                                        <option>Expert</option>
                                     </select>
                                 </div>
                                 <div class="flex items-center justify-between">
@@ -267,10 +260,78 @@
 
                         <!-- Intro Video -->
                         <div class="bg-white rounded-lg p-6 shadow-sm">
-                            <h2 class="text-sm font-medium text-gray-900 mb-4">Intro Video</h2>
-                            <button type="button" class="w-full text-blue-600 text-sm font-medium">
-                                Add from URL
-                            </button>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <h2 class="text-sm font-medium text-gray-900">Intro Video</h2>
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+
+                                <!-- URL Input Area -->
+                                <div x-data="{ showUrlInput: false, videoUrl: '' }">
+                                    <!-- Add URL Button -->
+                                    <button type="button" 
+                                            x-show="!showUrlInput"
+                                            @click="showUrlInput = true" 
+                                            class="w-full text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Add from URL
+                                    </button>
+
+                                    <!-- URL Input Form -->
+                                    <div x-show="showUrlInput" class="space-y-3">
+                                        <div class="flex items-center space-x-2">
+                                            <input type="url" 
+                                                   name="video_url" 
+                                                   x-model="videoUrl"
+                                                   placeholder="Paste video URL here"
+                                                   class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                            
+                                            <button type="button" 
+                                                    @click="showUrlInput = false; videoUrl = ''" 
+                                                    class="inline-flex items-center p-1 border border-transparent rounded-full text-gray-400 hover:text-gray-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <!-- Video Preview -->
+                                        <template x-if="videoUrl">
+                                            <div class="relative bg-gray-50 rounded-lg overflow-hidden">
+                                                <!-- Video Thumbnail/Preview would go here -->
+                                                <div class="aspect-w-16 aspect-h-9">
+                                                    <div class="flex items-center justify-center bg-gray-100">
+                                                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                <!-- URL Display -->
+                                                <div class="p-3 bg-white border-t">
+                                                    <p class="text-xs text-gray-500 truncate" x-text="videoUrl"></p>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Help Text -->
+                                        <p class="text-xs text-gray-500">
+                                            Supported platforms: YouTube, Vimeo
+                                        </p>
+                                    </div>
+                                </div>
+
+                                @error('video_url')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- Pricing Model -->
@@ -288,12 +349,29 @@
                             </div>
                         </div>
 
-                        <!-- Categories -->
+                        <!-- Category Selection -->
                         <div class="bg-white rounded-lg p-6 shadow-sm">
-                            <h2 class="text-sm font-medium text-gray-900 mb-4">Categories</h2>
-                            <div class="text-gray-500 text-sm">
-                                No categories found.
-                                <button type="button" class="text-blue-600 font-medium block mt-2">+ Add</button>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-sm font-medium text-gray-700">
+                                        Category
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <button type="button" 
+                                            onclick="openCategoryModal()"
+                                            class="text-sm text-blue-600 hover:text-blue-700">
+                                        + Add New Category
+                                    </button>
+                                </div>
+
+                                <!-- Existing Category Select -->
+                                <select name="category_id" 
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">Select Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -315,6 +393,18 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-end mt-6">
+                    <button type="button" 
+                            onclick="nextStep()"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Next
+                        <svg class="ml-2 -mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -354,14 +444,23 @@
                     </button>
                 </div>
 
-                <div class="mt-6 flex justify-between">
-                    <button type="button" @click="currentStep = 'basics'"
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-6">
+                    <button type="button" 
+                            onclick="previousStep()"
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="mr-2 -ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
                         Previous
                     </button>
-                    <button type="button" @click="currentStep = 'additional'"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    <button type="button" 
+                            onclick="nextStep()"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Next
+                        <svg class="ml-2 -mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -430,13 +529,17 @@
                     </div>
 
                     <!-- Navigation Buttons -->
-                    <div class="flex justify-between pt-4">
-                        <button type="button" @click="currentStep = 'curriculum'"
-                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <div class="flex justify-between mt-6">
+                        <button type="button" 
+                                onclick="previousStep()"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="mr-2 -ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
                             Previous
                         </button>
                         <button type="submit" 
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Save Course
                         </button>
                     </div>
@@ -444,81 +547,146 @@
             </div>
         </form>
     </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Add New Category
+                            </h3>
+                            <div class="mt-4 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Category Name</label>
+                                    <input type="text" 
+                                           id="new_category_name"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                                    <textarea id="new_category_description"
+                                              rows="3" 
+                                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" 
+                            onclick="saveNewCategory()"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Save
+                    </button>
+                    <button type="button" 
+                            onclick="closeCategoryModal()"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-instructor-layout>
 
 @push('scripts')
 <script>
-// Curriculum handling
-let topicCount = 1;
-
-// Add new topic
-document.querySelector('[data-action="add-topic"]').addEventListener('click', function() {
-    const topicTemplate = document.getElementById('topic-template').content.cloneNode(true);
-    const topicContainer = document.getElementById('topics-container');
-    
-    // Update names and IDs
-    topicTemplate.querySelectorAll('[name*="[0]"]').forEach(el => {
-        el.name = el.name.replace('[0]', `[${topicCount}]`);
-    });
-    
-    topicContainer.appendChild(topicTemplate);
-    topicCount++;
-});
-
-// Add lesson modal
-function openLessonModal(topicIndex) {
-    // Implementation for lesson modal
+function openCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('hidden');
 }
 
-// Add quiz modal
-function openQuizModal(topicIndex) {
-    // Implementation for quiz modal
+function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.add('hidden');
+    // Reset form
+    document.getElementById('new_category_name').value = '';
+    document.getElementById('new_category_description').value = '';
 }
 
-// Delete topic
-function deleteTopic(element) {
-    element.closest('.topic-container').remove();
-}
+function saveNewCategory() {
+    const name = document.getElementById('new_category_name').value;
+    const description = document.getElementById('new_category_description').value;
 
-// Handle step navigation
-document.querySelectorAll('[data-step]').forEach(button => {
-    button.addEventListener('click', function() {
-        const step = this.dataset.step;
-        showStep(step);
-    });
-});
+    if (!name.trim()) {
+        alert('Category name is required');
+        return;
+    }
 
-function showStep(step) {
-    // Hide all steps
-    document.querySelectorAll('.step-content').forEach(content => {
-        content.classList.add('hidden');
-    });
-    
-    // Show selected step
-    document.getElementById(`${step}-content`).classList.remove('hidden');
-    
-    // Update navigation state
-    document.querySelectorAll('.step-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-50', 'text-blue-700');
-        btn.classList.add('text-gray-500');
-        
-        if (btn.dataset.step === step) {
-            btn.classList.add('bg-blue-50', 'text-blue-700');
-            btn.classList.remove('text-gray-500');
+    fetch('{{ route("instructor.categories.store") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ name, description })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add new option to select
+            const select = document.querySelector('[name="category_id"]');
+            const option = new Option(data.category.name, data.category.id, true, true);
+            select.add(option);
+            
+            // Close modal and reset form
+            closeCategoryModal();
+            
+            // Show success message
+            alert('Category created successfully!');
+        } else {
+            alert(data.message || 'Failed to create category');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to create category');
     });
+}
+
+// Close modal when clicking outside
+document.getElementById('categoryModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCategoryModal();
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('categoryModal').classList.contains('hidden')) {
+        closeCategoryModal();
+    }
+});
+
+let currentStep = 1;
+const totalSteps = 3;
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        document.querySelector(`#step-${currentStep}`).classList.add('hidden');
+        currentStep++;
+        document.querySelector(`#step-${currentStep}`).classList.remove('hidden');
+        updateProgressBar();
+    }
+}
+
+function previousStep() {
+    if (currentStep > 1) {
+        document.querySelector(`#step-${currentStep}`).classList.add('hidden');
+        currentStep--;
+        document.querySelector(`#step-${currentStep}`).classList.remove('hidden');
+        updateProgressBar();
+    }
+}
+
+function updateProgressBar() {
+    const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    document.querySelector('.progress-bar').style.width = `${progress}%`;
 }
 </script>
-@endpush
-
-@push('styles')
-<style>
-.topic-container:hover .topic-actions {
-    opacity: 1;
-}
-.topic-actions {
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-</style>
 @endpush

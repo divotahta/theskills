@@ -10,10 +10,14 @@ class Course extends Model
         'title',
         'description', 
         'instructor_id',
+        'category_id',
         'price',
         'video_type',
         'video_url',
-        'is_public'
+        'is_public',
+        'thumbnail',
+        'difficulty_level',
+        'max_students'
     ];
 
     public function topics()

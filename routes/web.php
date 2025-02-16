@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Instructor\CategoryController;
+use App\Http\Controllers\Instructor\CourseController;
 
 // Rute untuk semua pengguna
 Route::get('/', function () {
@@ -45,31 +47,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 });
 
 // Rute untuk instructor
-Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->group(function () {
+Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
     Route::get('/dashboard', function () {
-        $totalCourses = \App\Models\Course::where('instructor_id', Auth::user()->id)->count();
-        $totalStudents = \App\Models\Enrollment::whereHas('course', function($q) {
-            $q->where('instructor_id', Auth::user()->id);
-        })->count();
-        $totalRevenue = \App\Models\Payment::whereHas('course', function($q) {
-            $q->where('instructor_id', Auth::user()->id);
-        })->where('status', 'completed')->sum('amount');
-        
-        return view('instructor.dashboard', compact('totalCourses', 'totalStudents', 'totalRevenue'));
-    })->name('instructor.dashboard');
+        return view('instructor.dashboard');
+    })->name('dashboard');
 
-    Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])
-        ->name('instructor.courses.create');
-    
-    Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])
-        ->name('instructor.courses.store');
-    
-    Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])
-        ->name('instructor.courses.index');
+    // Course routes - hanya gunakan method yang diperlukan
+    Route::resource('courses', CourseController::class)->except(['show', 'destroy']);
 
-    Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])
-        ->name('instructor.courses.edit');
-
+    // Category routes
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 });
 
 // Rute untuk student
