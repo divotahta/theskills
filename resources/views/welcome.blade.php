@@ -1,7 +1,7 @@
 <x-main-layout>
     <!-- Hero Section -->
     <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <h1 class="text-4xl md:text-5xl font-bold mb-6">
@@ -21,8 +21,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="hidden lg:block">
-                    <img src="/images/hero-illustration.svg" alt="Kids Learning" class="w-full">
+                <div class="hidden lg:block ">
+                    <img src="{{ asset('images/homepage.png') }}" alt="Kids Learning" class="h-[450px] ">
                 </div>
             </div>
         </div>

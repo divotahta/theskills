@@ -9,12 +9,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Instructor\CategoryController;
 use App\Http\Controllers\Instructor\CourseController;
 use App\Http\Controllers\CourseController as PublicCourseController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 // Public routes
 Route::get('/', function () {
     return view('welcome');
-});
-
+})->name('welcome');
 Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course}', [PublicCourseController::class, 'show'])->name('courses.show');
 
@@ -22,17 +22,14 @@ Route::get('/courses/{course}', [PublicCourseController::class, 'show'])->name('
 Route::middleware(['auth'])->group(function () {
     // Dashboard routes based on role
     Route::get('/dashboard', function () {
-        $user = auth()->user();
-        
-        if ($user->role === 'admin') {
+        if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'instructor') {
+        } elseif (Auth::user()->role === 'instructor') {
             return redirect()->route('instructor.dashboard');
-        } elseif ($user->role === 'student') {
+        } elseif (Auth::user()->role === 'student') {
             return redirect()->route('student.dashboard');
         }
-        
-        return view('dashboard');
+        return redirect('/');
     })->name('dashboard');
 });
 
@@ -43,33 +40,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->name('admin.dashboard');
 });
 
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/courses/create', [App\Http\Controllers\Admin\CourseController::class, 'create'])
+        ->name('admin.courses.create');
+
+    Route::post('/courses', [App\Http\Controllers\Admin\CourseController::class, 'store'])
+        ->name('admin.courses.store');
+
+    Route::get('/courses', [App\Http\Controllers\Admin\CourseController::class, 'index'])
+        ->name('admin.courses.index');
+});
+
 // Instructor routes
 Route::middleware(['auth', 'role:instructor'])->group(function () {
     Route::get('/instructor/dashboard', function () {
         return view('instructor.dashboard');
     })->name('instructor.dashboard');
 });
-
-// Student routes  
-Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/student/dashboard', function () {
-        return view('student.dashboard');
-    })->name('student.dashboard');
-});
-
-// Rute untuk admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/courses/create', [App\Http\Controllers\Admin\CourseController::class, 'create'])
-        ->name('admin.courses.create');
-    
-    Route::post('/courses', [App\Http\Controllers\Admin\CourseController::class, 'store'])
-        ->name('admin.courses.store');
-    
-    Route::get('/courses', [App\Http\Controllers\Admin\CourseController::class, 'index'])
-        ->name('admin.courses.index');
-});
-
-// Rute untuk instructor
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
     // Course routes - hanya gunakan method yang diperlukan
     Route::resource('courses', CourseController::class)->except(['show', 'destroy']);
@@ -78,19 +65,38 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 });
 
-// Rute untuk student
+// Student routes  
+Route::middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/student/dashboard', function () {
+        return view('student.dashboard');
+    })->name('student.dashboard');
+});
 Route::middleware(['auth', 'role:student'])->prefix('student')->group(function () {
     Route::get('/courses', function () {
         $enrolledCourses = \App\Models\Enrollment::where('user_id', Auth::id())
-            ->with(['course' => function($q) {
+            ->with(['course' => function ($q) {
                 $q->with('instructor');
             }])
             ->latest()
             ->get();
-            
+
         return view('student.courses.index', compact('enrolledCourses'));
     })->name('student.courses.index');
 });
 
 // Auth routes
-require __DIR__.'/auth.php';
+Route::middleware('guest')->group(function () {
+    // Student Registration
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    // Instructor Registration  
+    Route::get('instructor/register', [RegisteredUserController::class, 'createInstructor'])
+        ->name('instructor.register');
+    Route::post('instructor/register', [RegisteredUserController::class, 'storeInstructor'])
+        ->name('instructor.register.store');
+});
+
+// Auth routes
+require __DIR__ . '/auth.php';
