@@ -245,54 +245,6 @@
             <!-- Additional Step -->
             <div x-show="currentStep === 'additional'" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Video Settings -->
-                <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
-                    <h3 class="text-base font-medium text-gray-900 mb-4">Video Settings</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Video Type</label>
-                            <select name="video_type" 
-                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="youtube" {{ old('video_type', $course->video_type) == 'youtube' ? 'selected' : '' }}>YouTube</option>
-                                <option value="vimeo" {{ old('video_type', $course->video_type) == 'vimeo' ? 'selected' : '' }}>Vimeo</option>
-                                <option value="native" {{ old('video_type', $course->video_type) == 'native' ? 'selected' : '' }}>Native Upload</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Video URL</label>
-                            <input type="url" name="video_url" 
-                                   value="{{ old('video_url', $course->video_url) }}"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Course Settings -->
-                <div class="bg-white rounded-lg p-6 shadow-sm">
-                    <h3 class="text-base font-medium text-gray-900 mb-4">Course Settings</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Difficulty Level</label>
-                            <select name="difficulty_level" 
-                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="beginner" {{ old('difficulty_level', $course->difficulty_level) == 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                <option value="intermediate" {{ old('difficulty_level', $course->difficulty_level) == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
-                                <option value="advanced" {{ old('difficulty_level', $course->difficulty_level) == 'advanced' ? 'selected' : '' }}>Advanced</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Maximum Students</label>
-                            <input type="number" name="max_students" 
-                                   value="{{ old('max_students', $course->max_students) }}"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="is_public" value="1" 
-                                   {{ old('is_public', $course->is_public) ? 'checked' : '' }}
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label class="ml-2 block text-sm text-gray-900">Make this course public</label>
-                        </div>
-                    </div>
-                </div>
             </div>
         </form>
 

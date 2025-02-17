@@ -12,6 +12,8 @@ use App\Http\Controllers\CourseController as PublicCourseController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Instructor\DashboardController;
 use App\Http\Controllers\Instructor\ProfileController as InstructorProfileController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\ProfileController as StudentProfileController;
 
 // Public routes
 Route::get('/', function () {
@@ -69,9 +71,10 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
 
 // Student routes  
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/student/dashboard', function () {
-        return view('student.dashboard');
-    })->name('student.dashboard');
+    Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
+        ->name('student.dashboard');
+    Route::get('/student/profile', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
+    Route::put('/student/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');
 });
 Route::middleware(['auth', 'role:student'])->prefix('student')->group(function () {
     Route::get('/courses', function () {
