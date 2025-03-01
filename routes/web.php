@@ -58,51 +58,34 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 // Instructor routes
 Route::middleware(['auth', 'role:instructor'])->group(function () {
-    Route::get('/instructor/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
-    Route::get('/instructor/profile', [InstructorProfileController::class, 'edit'])->name('instructor.profile.edit');
-    Route::put('/instructor/profile', [InstructorProfileController::class, 'update'])->name('instructor.profile.update');
-    Route::get('/instructor/{instructor}', [InstructorProfileController::class, 'show'])->name('instructor.profile.show');
-    // Route::get('/instructor/courses', [InstructorCourseController::class, 'show'])->name('instructor.courses.show');
-});
-Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
-    
-    // Profile
-    Route::get('/profile/edit', [InstructorProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [InstructorProfileController::class, 'update'])->name('profile.update');
-    Route::get('/profile/{instructor}', [InstructorProfileController::class, 'show'])->name('profile.show');
-    
-    // Courses
-    Route::get('/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
-    Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('courses.create');
-    // Route::post('/courses', [InstructorCourseController::class, 'store'])->name('courses.store');
-    Route::get('/courses/{course}/edit', [InstructorCourseController::class, 'edit'])->name('courses.edit');
-    Route::put('/courses/{course}', [InstructorCourseController::class, 'update'])->name('courses.update');
-    Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('courses.destroy');
-
-    // Category routes
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::prefix('instructor')->name('instructor.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
+        
+        // Profile
+        Route::get('/profile/edit', [InstructorProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [InstructorProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/{instructor}', [InstructorProfileController::class, 'show'])->name('profile.show');
+        
+        // Courses
+        Route::get('/courses', [InstructorCourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('courses.create');
+        Route::post('/courses', [InstructorCourseController::class, 'store'])->name('courses.store');
+        Route::get('/courses/{course}/edit', [InstructorCourseController::class, 'edit'])->name('courses.edit');
+        Route::put('/courses/{course}', [InstructorCourseController::class, 'update'])->name('courses.update');
+        
+        // Categories
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    });
 });
 
 // Student routes  
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
-        ->name('student.dashboard');
-    Route::get('/student/profile', [StudentProfileController::class, 'edit'])->name('student.profile.edit');
-    Route::put('/student/profile', [StudentProfileController::class, 'update'])->name('student.profile.update');
-});
-Route::middleware(['auth', 'role:student'])->prefix('student')->group(function () {
-    Route::get('/courses', function () {
-        $enrolledCourses = \App\Models\Enrollment::where('user_id', Auth::id())
-            ->with(['course' => function ($q) {
-                $q->with('instructor');
-            }])
-            ->latest()
-            ->get();
-
-        return view('student.courses.index', compact('enrolledCourses'));
-    })->name('student.courses.index');
+    Route::prefix('student')->name('student.')->group(function () {
+        Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [StudentProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [StudentProfileController::class, 'update'])->name('profile.update');
+    });
 });
 
 // Auth routes
