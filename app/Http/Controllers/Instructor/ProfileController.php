@@ -10,7 +10,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
+
 {
+
+    //show profile
+    public function show(User $instructor)
+    {
+        $instructor->load(['courses' => function($query) {
+            $query->withCount('enrollments')
+                 ->withAvg('reviews', 'rating');
+        }]);
+
+        // Gunakan accessor untuk menghitung jumlah students
+        $studentsCount = $instructor->students_count;
+        
+        return view('instructor.profile.show', compact('instructor', 'studentsCount'));
+    }
+
     /**
      * Show the instructor profile edit form.
      */

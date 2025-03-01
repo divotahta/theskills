@@ -8,16 +8,13 @@ class Course extends Model
 {
     protected $fillable = [
         'title',
-        'description', 
+        'description',
         'instructor_id',
         'category_id',
         'price',
-        'video_type',
-        'video_url',
-        'is_public',
         'thumbnail',
-        'difficulty_level',
-        'max_students'
+        'is_public',
+        'difficulty_level'
     ];
 
     public function instructor()
@@ -33,5 +30,20 @@ class Course extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getStudentsCountAttribute()
+    {
+        return $this->enrollments()->count();
     }
 } 

@@ -7,13 +7,14 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Instructor\CategoryController;
-use App\Http\Controllers\Instructor\CourseController;
+use App\Http\Controllers\Instructor\CourseController as InstructorCourseController;
 use App\Http\Controllers\CourseController as PublicCourseController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Instructor\DashboardController;
+use App\Http\Controllers\Instructor\DashboardController as InstructorDashboardController;
 use App\Http\Controllers\Instructor\ProfileController as InstructorProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\ProfileController as StudentProfileController;
+// use App\Http\Controllers\Instructor\CourseController;
 
 // Public routes
 Route::get('/', function () {
@@ -57,13 +58,28 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 // Instructor routes
 Route::middleware(['auth', 'role:instructor'])->group(function () {
-    Route::get('/instructor/dashboard', [DashboardController::class, 'index'])->name('instructor.dashboard');
+    Route::get('/instructor/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
     Route::get('/instructor/profile', [InstructorProfileController::class, 'edit'])->name('instructor.profile.edit');
     Route::put('/instructor/profile', [InstructorProfileController::class, 'update'])->name('instructor.profile.update');
+    Route::get('/instructor/{instructor}', [InstructorProfileController::class, 'show'])->name('instructor.profile.show');
+    // Route::get('/instructor/courses', [InstructorCourseController::class, 'show'])->name('instructor.courses.show');
 });
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
-    // Course routes - hanya gunakan method yang diperlukan
-    Route::resource('courses', CourseController::class)->except(['show', 'destroy']);
+    // Dashboard
+    Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
+    
+    // Profile
+    Route::get('/profile/edit', [InstructorProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [InstructorProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/{instructor}', [InstructorProfileController::class, 'show'])->name('profile.show');
+    
+    // Courses
+    Route::get('/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    Route::get('/courses/create', [InstructorCourseController::class, 'create'])->name('courses.create');
+    // Route::post('/courses', [InstructorCourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{course}/edit', [InstructorCourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/courses/{course}', [InstructorCourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [InstructorCourseController::class, 'destroy'])->name('courses.destroy');
 
     // Category routes
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');

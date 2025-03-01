@@ -24,10 +24,10 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::where('instructor_id', Auth::id())
-            // ->withCount('enrollments')
-            ->with('category')
+            ->withCount(['enrollments as students_count'])
+            ->with(['category'])
             ->latest()
-            ->paginate(10);
+            ->paginate(9);
 
         return view('instructor.courses.index', compact('courses'));
     }
@@ -43,7 +43,7 @@ class CourseController extends Controller
     {
         $this->authorize('update', $course);
         
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
@@ -120,7 +120,7 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:categories,id',
@@ -133,49 +133,14 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        try {
-            $thumbnailPath = null;
-            if ($request->hasFile('thumbnail')) {
-                $thumbnailPath = $request->file('thumbnail')->store('course-thumbnails', 'public');
-            }
+        // $course = Auth::user()->courses()->create($validated);
 
-            $course = Course::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'instructor_id' => Auth::id(),
-                'category_id' => $request->category_id,
-                'price' => $request->price,
-                'max_students' => $request->max_students,
-                'difficulty_level' => $request->difficulty_level,
-                'is_public' => $request->boolean('is_public'),
-                'video_type' => $request->video_type,
-                'video_url' => $request->video_url,
-                'thumbnail' => $thumbnailPath,
-            ]);
+        // if ($request->hasFile('thumbnail')) {
+        //     $path = $request->file('thumbnail')->store('courses/thumbnails', 'public');
+        //     $course->update(['thumbnail' => $path]);
+        // }
 
-            // Handle topics/curriculum
-            if ($request->has('topics')) {
-                foreach ($request->topics as $topic) {
-                    $course->topics()->create([
-                        'title' => $topic['title'],
-                        'description' => $topic['description'] ?? null,
-                    ]);
-                }
-            }
-
-            return redirect()
-                ->route('instructor.courses.index')
-                ->with('success', 'Course created successfully!');
-
-        } catch (\Exception $e) {
-            // If thumbnail was uploaded but course creation failed, delete the thumbnail
-            if ($thumbnailPath) {
-                Storage::disk('public')->delete($thumbnailPath);
-            }
-
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create course. Please try again.');
-        }
+        // return redirect()->route('instructor.courses.index')
+        //     ->with('success', 'Kursus berhasil dibuat!');
     }
 } 
