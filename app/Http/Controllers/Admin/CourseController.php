@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use App\Models\Course;
 use App\Models\Category;
-use App\Models\User;
 use App\Models\Enrollment;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
@@ -31,14 +32,24 @@ class CourseController extends Controller
             'is_public' => 'boolean',
             'video_type' => 'required|in:youtube,vimeo,native',
             'video_url' => 'required|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        dd($request->all());
 
         try {
             $thumbnailPath = null;
+
             if ($request->hasFile('thumbnail')) {
-                $thumbnailPath = $request->file('thumbnail')->store('course-thumbnails', 'public');
+                $uploadedFile = $request->file('thumbnail');
+
+                // Debug: log error code if invalid
+                if (!$uploadedFile->isValid()) {
+                    $errorCode = $uploadedFile->getError();
+                    Log::warning('Thumbnail upload failed with error code: ' . $errorCode);
+                    // Optional: throw or skip
+                } else {
+                    // Only store if valid
+                    $thumbnailPath = $uploadedFile->store('course-thumbnails', 'public');
+                }
             }
 
             $course = Course::create([
@@ -54,9 +65,10 @@ class CourseController extends Controller
                 'thumbnail' => $thumbnailPath,
             ]);
 
-            if ($request->has('topics')) {
+            // Handle topics...
+            if ($request->has('topics') && is_array($request->topics)) {
                 foreach ($request->topics as $topic) {
-                    if (!empty($topic['title'])) {
+                    if (!empty(trim($topic['title'] ?? ''))) {
                         $course->topics()->create([
                             'title' => $topic['title'],
                             'description' => $topic['description'] ?? null,
@@ -66,20 +78,14 @@ class CourseController extends Controller
                     }
                 }
             }
-            
 
-            return redirect()
-                ->route('admin.courses.index')
-                ->with('success', 'Course created successfully!');
-
+            return redirect()->route('admin.courses.index')->with('success', 'Course created successfully!');
         } catch (\Exception $e) {
-            if ($thumbnailPath) {
+            Log::error('Course creation failed: ' . $e->getMessage());
+            if (!empty($thumbnailPath)) {
                 Storage::disk('public')->delete($thumbnailPath);
             }
-
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create course. Please try again.');
+            return back()->withInput()->withErrors(['error' => 'Failed to create course. Please try again.']);
         }
     }
 
@@ -93,10 +99,10 @@ class CourseController extends Controller
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('description', 'like', "%{$searchTerm}%")
-                  ->orWhereHas('instructor', function ($instructorQuery) use ($searchTerm) {
-                      $instructorQuery->where('name', 'like', "%{$searchTerm}%");
-                  });
+                    ->orWhere('description', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('instructor', function ($instructorQuery) use ($searchTerm) {
+                        $instructorQuery->where('name', 'like', "%{$searchTerm}%");
+                    });
             });
         }
 
@@ -132,7 +138,7 @@ class CourseController extends Controller
     public function toggleStatus(Course $course)
     {
         $course->update(['is_public' => !$course->is_public]);
-        
+
         $status = $course->is_public ? 'public' : 'private';
         return back()->with('success', "Course has been made {$status}.");
     }
@@ -163,7 +169,7 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $course->load(['instructor', 'category', 'topics', 'enrollments.user']);
-        
+
         return view('admin.courses.show', compact('course'));
     }
 
@@ -174,7 +180,7 @@ class CourseController extends Controller
     {
         $categories = Category::all();
         $instructors = User::where('role', 'instructor')->get();
-        
+
         return view('admin.courses.edit', compact('course', 'categories', 'instructors'));
     }
 
@@ -205,7 +211,7 @@ class CourseController extends Controller
                 if ($course->thumbnail) {
                     Storage::disk('public')->delete($course->thumbnail);
                 }
-                
+
                 // Store new thumbnail
                 $data['thumbnail'] = $request->file('thumbnail')->store('course-thumbnails', 'public');
             }
@@ -216,7 +222,7 @@ class CourseController extends Controller
             if ($request->has('topics')) {
                 // Delete existing topics
                 $course->topics()->delete();
-                
+
                 // Create new topics
                 foreach ($request->topics as $topic) {
                     if (!empty($topic['title'])) {
@@ -233,11 +239,10 @@ class CourseController extends Controller
             return redirect()
                 ->route('admin.courses.index')
                 ->with('success', 'Course updated successfully!');
-
         } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Failed to update course. Please try again.');
         }
     }
-} 
+}

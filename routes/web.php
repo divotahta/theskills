@@ -18,6 +18,30 @@ use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 
+// Debug route for file upload testing
+Route::post('/debug-upload', function(Request $request) {
+    \Log::info('Debug upload request:', [
+        'has_file' => $request->hasFile('thumbnail'),
+        'file_valid' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->isValid() : 'no file',
+        'file_size' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->getSize() : 'no file',
+        'file_error' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->getError() : 'no file',
+        'file_path' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->path() : 'no file',
+        'all_files' => $request->allFiles()
+    ]);
+    
+    if ($request->hasFile('thumbnail')) {
+        $file = $request->file('thumbnail');
+        try {
+            $path = $file->store('test-uploads', 'public');
+            return response()->json(['success' => true, 'path' => $path]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+    
+    return response()->json(['success' => false, 'error' => 'No file uploaded']);
+});
+
 // Public routes
 Route::get('/', function () {
     return view('welcome');

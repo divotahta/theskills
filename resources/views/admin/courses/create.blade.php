@@ -152,11 +152,13 @@
                     </div>
                     <div class="p-6 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Thumbnail Upload -->
+                            <!-- Thumbnail Upload with Preview & Remove Button -->
                             <div>
                                 <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Course Thumbnail</label>
-                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
-                                    <div class="space-y-1 text-center">
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors relative"
+                                     id="thumbnail-drop-area">
+                                    <!-- Placeholder (shown when no image) -->
+                                    <div class="space-y-1 text-center" id="thumbnail-placeholder">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
@@ -168,6 +170,18 @@
                                             <p class="pl-1">or drag and drop</p>
                                         </div>
                                         <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                                    </div>
+                                    <!-- Preview (hidden by default) -->
+                                    <div id="thumbnail-preview" class="hidden flex flex-col items-center">
+                                        <img id="thumbnail-preview-img" src="#" alt="Thumbnail preview" class="max-h-40 object-contain mb-2" />
+                                        <button type="button" 
+                                                id="remove-thumbnail-btn"
+                                                class="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            Remove
+                                        </button>
                                     </div>
                                 </div>
                                 @error('thumbnail')
@@ -277,76 +291,135 @@
         </div>
     </div>
 
-    <!-- JavaScript for dynamic topic management -->
+    <!-- JavaScript: Thumbnail Preview + Remove + Topic Management -->
     <script>
-        let topicCount = 0;
+        document.addEventListener('DOMContentLoaded', function () {
+            // =============== THUMBNAIL PREVIEW & REMOVE ===============
+            const thumbnailInput = document.getElementById('thumbnail');
+            const previewContainer = document.getElementById('thumbnail-preview');
+            const previewImage = document.getElementById('thumbnail-preview-img');
+            const placeholder = document.getElementById('thumbnail-placeholder');
+            const removeBtn = document.getElementById('remove-thumbnail-btn');
+            const dropArea = document.getElementById('thumbnail-drop-area');
 
-        function addTopic() {
-            topicCount++;
-            const container = document.getElementById('topics-container');
-            
-            const topicDiv = document.createElement('div');
-            topicDiv.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
-            topicDiv.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="text-sm font-medium text-gray-900">Topic ${topicCount}</h4>
-                    <button type="button" 
-                            onclick="removeTopic(this)"
-                            class="text-red-600 hover:text-red-800">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Topic Title *</label>
-                        <input type="text" 
-                               name="topics[${topicCount}][title]" 
-                               required
-                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                               placeholder="Enter topic title">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Topic Description</label>
-                        <textarea name="topics[${topicCount}][description]" 
-                                  rows="3"
-                                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                  placeholder="Describe what will be covered in this topic"></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Order</label>
-                            <input type="number" 
-                                   name="topics[${topicCount}][order]" 
-                                   value="${topicCount}"
-                                   min="1"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
-                            <input type="number" 
-                                   name="topics[${topicCount}][duration]" 
-                                   min="1"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   placeholder="Optional">
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(topicDiv);
-        }
-
-        function removeTopic(button) {
-            button.closest('.border').remove();
-        }
-
-        // Add initial topic if none exist
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('topics-container').children.length === 0) {
-                addTopic();
+            function resetPreview() {
+                previewImage.src = '#';
+                previewContainer.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                // Clear file input
+                thumbnailInput.value = '';
             }
+
+            function showPreview(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        placeholder.classList.add('hidden');
+                        previewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    resetPreview();
+                }
+            }
+
+            // Handle file selection
+            thumbnailInput.addEventListener('change', function (e) {
+                showPreview(e.target.files[0]);
+            });
+
+            // Handle remove button
+            removeBtn.addEventListener('click', resetPreview);
+
+            // Optional: Drag & Drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.add('border-blue-400', 'bg-blue-50');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.remove('border-blue-400', 'bg-blue-50');
+                }, false);
+            });
+
+            dropArea.addEventListener('drop', function (e) {
+                preventDefaults(e);
+                const file = e.dataTransfer.files[0];
+                thumbnailInput.files = e.dataTransfer.files;
+                showPreview(file);
+            });
+
+            // =============== TOPIC MANAGEMENT ===============
+            let topicCount = 0;
+
+            window.addTopic = function() {
+                topicCount++;
+                const container = document.getElementById('topics-container');
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+                topicDiv.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-sm font-medium text-gray-900">Topic ${topicCount}</h4>
+                        <button type="button" onclick="removeTopic(this)" class="text-red-600 hover:text-red-800">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Topic Title *</label>
+                            <input type="text" name="topics[${topicCount}][title]" required
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   placeholder="Enter topic title">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Topic Description</label>
+                            <textarea name="topics[${topicCount}][description]" rows="3"
+                                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                      placeholder="Describe what will be covered in this topic"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                                <input type="number" name="topics[${topicCount}][order]" value="${topicCount}" min="1"
+                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                                <input type="number" name="topics[${topicCount}][duration]" min="1"
+                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                       placeholder="e.g. 15">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(topicDiv);
+            };
+
+            window.removeTopic = function(button) {
+                const container = document.getElementById('topics-container');
+                if (container.children.length <= 1) {
+                    alert('At least one topic is required.');
+                    return;
+                }
+                button.closest('.border').remove();
+            };
+
+            // Initialize with one topic
+            window.addTopic();
         });
     </script>
 </x-admin-layout>
