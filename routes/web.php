@@ -14,7 +14,9 @@ use App\Http\Controllers\Instructor\DashboardController as InstructorDashboardCo
 use App\Http\Controllers\Instructor\ProfileController as InstructorProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\ProfileController as StudentProfileController;
-// use App\Http\Controllers\Instructor\CourseController;
+use App\Http\Controllers\Student\CourseController as StudentCourseController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 
 // Public routes
 Route::get('/', function () {
@@ -40,20 +42,39 @@ Route::middleware(['auth'])->group(function () {
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    
+    // Admin profile routes
+    Route::get('/admin/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::put('/admin/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+    Route::get('/admin/profile/show', [AdminProfileController::class, 'show'])->name('admin.profile.show');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/courses/create', [App\Http\Controllers\Admin\CourseController::class, 'create'])
-        ->name('admin.courses.create');
-
-    Route::post('/courses', [App\Http\Controllers\Admin\CourseController::class, 'store'])
-        ->name('admin.courses.store');
-
+    // Course management routes
     Route::get('/courses', [App\Http\Controllers\Admin\CourseController::class, 'index'])
         ->name('admin.courses.index');
+    
+    Route::get('/courses/create', [App\Http\Controllers\Admin\CourseController::class, 'create'])
+        ->name('admin.courses.create');
+    
+    Route::post('/courses', [App\Http\Controllers\Admin\CourseController::class, 'store'])
+        ->name('admin.courses.store');
+    
+    Route::get('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'show'])
+        ->name('admin.courses.show');
+    
+    Route::get('/courses/{course}/edit', [App\Http\Controllers\Admin\CourseController::class, 'edit'])
+        ->name('admin.courses.edit');
+    
+    Route::put('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'update'])
+        ->name('admin.courses.update');
+    
+    Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])
+        ->name('admin.courses.toggle-status');
+    
+    Route::delete('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'destroy'])
+        ->name('admin.courses.destroy');
 });
 
 // Instructor routes
@@ -85,6 +106,19 @@ Route::middleware(['auth', 'role:student'])->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
         Route::get('/profile', [StudentProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [StudentProfileController::class, 'update'])->name('profile.update');
+        
+        // Student course routes
+        Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
+        Route::post('/courses/{course}/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
+        Route::post('/courses/{course}/unenroll', [StudentCourseController::class, 'unenroll'])->name('courses.unenroll');
+        Route::get('/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
+        Route::get('/courses/{course}/learn', [StudentCourseController::class, 'learn'])->name('courses.learn');
+        Route::post('/courses/{course}/review', [StudentCourseController::class, 'review'])->name('courses.review');
+        Route::get('/courses/{course}/statistics', [StudentCourseController::class, 'statistics'])->name('courses.statistics');
+        Route::post('/courses/{course}/progress', [StudentCourseController::class, 'updateProgress'])->name('courses.progress');
+        Route::get('/courses/category/{category}', [StudentCourseController::class, 'category'])->name('courses.category');
+        Route::get('/courses/search', [StudentCourseController::class, 'search'])->name('courses.search');
     });
 });
 

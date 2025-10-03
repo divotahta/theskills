@@ -14,7 +14,9 @@ class Course extends Model
         'price',
         'thumbnail',
         'is_public',
-        'difficulty_level'
+        'video_type',
+        'video_url',
+        'max_students'
     ];
 
     public function instructor()

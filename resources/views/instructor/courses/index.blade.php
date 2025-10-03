@@ -73,7 +73,7 @@
                                     {{ $course->category->name }}
                                 </span>
                                 <span class="px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-800 rounded-full">
-                                    {{ ucfirst($course->difficulty_level) }}
+                                    {{ ucfirst($course->video_type) }}
                                 </span>
                             </div>
                             

@@ -1,6 +1,6 @@
 <x-admin-layout>
     @section('header')
-        Create New Course
+        Edit Course
     @endsection
 
     <div class="py-12">
@@ -22,17 +22,26 @@
                                 <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                                 </svg>
-                                <span class="ml-4 text-sm font-medium text-gray-500">Create Course</span>
+                                <a href="{{ route('admin.courses.show', $course) }}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ $course->title }}</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="ml-4 text-sm font-medium text-gray-500">Edit</span>
                             </div>
                         </li>
                     </ol>
                 </nav>
-                <h1 class="mt-4 text-3xl font-bold text-gray-900">Create New Course</h1>
-                <p class="mt-2 text-gray-600">Add a new course to the platform</p>
+                <h1 class="mt-4 text-3xl font-bold text-gray-900">Edit Course</h1>
+                <p class="mt-2 text-gray-600">Update course information and settings</p>
             </div>
 
-            <form method="POST" action="{{ route('admin.courses.store') }}" enctype="multipart/form-data" class="space-y-8">
+            <form method="POST" action="{{ route('admin.courses.update', $course) }}" enctype="multipart/form-data" class="space-y-8">
                 @csrf
+                @method('PUT')
 
                 <!-- Course Basic Information -->
                 <div class="bg-white shadow-sm rounded-lg">
@@ -48,7 +57,7 @@
                                 <input type="text" 
                                        name="title" 
                                        id="title"
-                                       value="{{ old('title') }}"
+                                       value="{{ old('title', $course->title) }}"
                                        required
                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('title') border-red-300 @enderror"
                                        placeholder="Enter course title">
@@ -65,7 +74,7 @@
                                           rows="4"
                                           required
                                           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('description') border-red-300 @enderror"
-                                          placeholder="Describe what students will learn in this course">{{ old('description') }}</textarea>
+                                          placeholder="Describe what students will learn in this course">{{ old('description', $course->description) }}</textarea>
                                 @error('description')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -80,7 +89,7 @@
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('instructor_id') border-red-300 @enderror">
                                     <option value="">Select an instructor</option>
                                     @foreach($instructors as $instructor)
-                                        <option value="{{ $instructor->id }}" {{ old('instructor_id') == $instructor->id ? 'selected' : '' }}>
+                                        <option value="{{ $instructor->id }}" {{ old('instructor_id', $course->instructor_id) == $instructor->id ? 'selected' : '' }}>
                                             {{ $instructor->name }} ({{ $instructor->email }})
                                         </option>
                                     @endforeach
@@ -99,7 +108,7 @@
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('category_id') border-red-300 @enderror">
                                     <option value="">Select a category</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}" {{ old('category_id', $course->category_id) == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -115,7 +124,7 @@
                                 <input type="number" 
                                        name="price" 
                                        id="price"
-                                       value="{{ old('price') }}"
+                                       value="{{ old('price', $course->price) }}"
                                        min="0"
                                        step="0.01"
                                        required
@@ -132,7 +141,7 @@
                                 <input type="number" 
                                        name="max_students" 
                                        id="max_students"
-                                       value="{{ old('max_students') }}"
+                                       value="{{ old('max_students', $course->max_students) }}"
                                        min="1"
                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('max_students') border-red-300 @enderror"
                                        placeholder="Leave empty for unlimited">
@@ -152,9 +161,23 @@
                     </div>
                     <div class="p-6 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Current Thumbnail -->
+                            @if($course->thumbnail)
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Thumbnail</label>
+                                    <div class="mb-4">
+                                        <img src="{{ Storage::url($course->thumbnail) }}" 
+                                             alt="{{ $course->title }}" 
+                                             class="h-32 w-full object-cover rounded-lg">
+                                    </div>
+                                </div>
+                            @endif
+
                             <!-- Thumbnail Upload -->
                             <div>
-                                <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Course Thumbnail</label>
+                                <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">
+                                    {{ $course->thumbnail ? 'Update Thumbnail' : 'Course Thumbnail' }}
+                                </label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                                     <div class="space-y-1 text-center">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -184,9 +207,9 @@
                                             required
                                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('video_type') border-red-300 @enderror">
                                         <option value="">Select video type</option>
-                                        <option value="youtube" {{ old('video_type') == 'youtube' ? 'selected' : '' }}>YouTube</option>
-                                        <option value="vimeo" {{ old('video_type') == 'vimeo' ? 'selected' : '' }}>Vimeo</option>
-                                        <option value="native" {{ old('video_type') == 'native' ? 'selected' : '' }}>Native Upload</option>
+                                        <option value="youtube" {{ old('video_type', $course->video_type) == 'youtube' ? 'selected' : '' }}>YouTube</option>
+                                        <option value="vimeo" {{ old('video_type', $course->video_type) == 'vimeo' ? 'selected' : '' }}>Vimeo</option>
+                                        <option value="native" {{ old('video_type', $course->video_type) == 'native' ? 'selected' : '' }}>Native Upload</option>
                                     </select>
                                     @error('video_type')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -198,7 +221,7 @@
                                     <input type="url" 
                                            name="video_url" 
                                            id="video_url"
-                                           value="{{ old('video_url') }}"
+                                           value="{{ old('video_url', $course->video_url) }}"
                                            required
                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('video_url') border-red-300 @enderror"
                                            placeholder="https://www.youtube.com/watch?v=...">
@@ -223,7 +246,7 @@
                                    name="is_public" 
                                    id="is_public"
                                    value="1"
-                                   {{ old('is_public', true) ? 'checked' : '' }}
+                                   {{ old('is_public', $course->is_public) ? 'checked' : '' }}
                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <label for="is_public" class="ml-2 block text-sm text-gray-900">
                                 Make this course public (visible to all users)
@@ -239,7 +262,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-medium text-gray-900">Course Topics</h3>
-                                <p class="mt-1 text-sm text-gray-600">Add topics/lessons for this course.</p>
+                                <p class="mt-1 text-sm text-gray-600">Manage topics/lessons for this course.</p>
                             </div>
                             <button type="button" 
                                     onclick="addTopic()"
@@ -253,15 +276,65 @@
                     </div>
                     <div class="p-6">
                         <div id="topics-container" class="space-y-4">
-                            <!-- Topics will be added here dynamically -->
+                            @foreach($course->topics as $index => $topic)
+                                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h4 class="text-sm font-medium text-gray-900">Topic {{ $index + 1 }}</h4>
+                                        <button type="button" 
+                                                onclick="removeTopic(this)"
+                                                class="text-red-600 hover:text-red-800">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Topic Title *</label>
+                                            <input type="text" 
+                                                   name="topics[{{ $index }}][title]" 
+                                                   value="{{ old('topics.'.$index.'.title', $topic->title) }}"
+                                                   required
+                                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                   placeholder="Enter topic title">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Topic Description</label>
+                                            <textarea name="topics[{{ $index }}][description]" 
+                                                      rows="3"
+                                                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                      placeholder="Describe what will be covered in this topic">{{ old('topics.'.$index.'.description', $topic->description) }}</textarea>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                                                <input type="number" 
+                                                       name="topics[{{ $index }}][order]" 
+                                                       value="{{ old('topics.'.$index.'.order', $topic->order ?? $index + 1) }}"
+                                                       min="1"
+                                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                                                <input type="number" 
+                                                       name="topics[{{ $index }}][duration]" 
+                                                       value="{{ old('topics.'.$index.'.duration', $topic->duration) }}"
+                                                       min="1"
+                                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       placeholder="Optional">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        <p class="mt-4 text-sm text-gray-500">Click "Add Topic" to add course topics. Topics will be displayed in the order they are added.</p>
+                        <p class="mt-4 text-sm text-gray-500">Click "Add Topic" to add more course topics. Topics will be displayed in the order they are added.</p>
                     </div>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="flex justify-end space-x-3">
-                    <a href="{{ route('admin.courses.index') }}" 
+                    <a href="{{ route('admin.courses.show', $course) }}" 
                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Cancel
                     </a>
@@ -270,7 +343,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
-                        Create Course
+                        Update Course
                     </button>
                 </div>
             </form>
@@ -279,7 +352,7 @@
 
     <!-- JavaScript for dynamic topic management -->
     <script>
-        let topicCount = 0;
+        let topicCount = {{ $course->topics->count() }};
 
         function addTopic() {
             topicCount++;
@@ -341,12 +414,5 @@
         function removeTopic(button) {
             button.closest('.border').remove();
         }
-
-        // Add initial topic if none exist
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('topics-container').children.length === 0) {
-                addTopic();
-            }
-        });
     </script>
 </x-admin-layout>

@@ -191,12 +191,12 @@
                             <h3 class="text-base font-medium text-gray-900 mb-4">Course Settings</h3>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Difficulty Level</label>
-                                    <select name="difficulty_level" 
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Video Type</label>
+                                    <select name="video_type" 
                                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="beginner" {{ old('difficulty_level', $course->difficulty_level) == 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                        <option value="intermediate" {{ old('difficulty_level', $course->difficulty_level) == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
-                                        <option value="advanced" {{ old('difficulty_level', $course->difficulty_level) == 'advanced' ? 'selected' : '' }}>Advanced</option>
+                                        <option value="youtube" {{ old('video_type', $course->video_type) == 'youtube' ? 'selected' : '' }}>YouTube</option>
+                                        <option value="vimeo" {{ old('video_type', $course->video_type) == 'vimeo' ? 'selected' : '' }}>Vimeo</option>
+                                        <option value="native" {{ old('video_type', $course->video_type) == 'native' ? 'selected' : '' }}>Native</option>
                                     </select>
                                 </div>
                                 <div>

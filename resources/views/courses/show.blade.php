@@ -10,7 +10,7 @@
                         <div class="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                             <span>{{ $course->category->name }}</span>
                             <span>•</span>
-                            <span>{{ $course->difficulty_level }}</span>
+                            <span>{{ $course->video_type }}</span>
                             <span>•</span>
                             <span>{{ $course->topics->count() }} topics</span>
                         </div>
@@ -102,7 +102,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                           d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
-                                Difficulty: {{ ucfirst($course->difficulty_level) }}
+                                Video Type: {{ ucfirst($course->video_type) }}
                             </li>
                             @if($course->max_students)
                                 <li class="flex items-center text-gray-600">
