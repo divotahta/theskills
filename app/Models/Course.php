@@ -19,6 +19,20 @@ class Course extends Model
         'max_students'
     ];
 
+    public function getThumbnailUrlAttribute()
+    {
+        if (empty($this->thumbnail)) {
+            return null;
+        }
+
+        // Jika path tidak mengandung '/', anggap di course-thumbnails (untuk kompatibilitas)
+        if (!str_contains($this->thumbnail, '/')) {
+            return asset('storage/course-thumbnails/' . $this->thumbnail);
+        }
+
+        return asset('storage/' . $this->thumbnail);
+    }
+
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');
@@ -42,6 +56,11 @@ class Course extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function contents()
+    {
+        return $this->hasMany(CourseContent::class)->orderBy('order');
     }
 
     public function getStudentsCountAttribute()

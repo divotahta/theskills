@@ -146,7 +146,7 @@
                             <div class="space-y-4">
                                 @if($course->thumbnail)
                                     <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                                        <img src="{{ Storage::url($course->thumbnail) }}" 
+                                        <img src="{{ $course->thumbnail_url }}" 
                                              alt="Course thumbnail" 
                                              class="w-full h-full object-cover">
                                     </div>

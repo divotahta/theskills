@@ -166,7 +166,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Current Thumbnail</label>
                                     <div class="mb-4">
-                                        <img src="{{ Storage::url($course->thumbnail) }}" 
+                                        <img src="{{ $course->thumbnail_url }}" 
                                              alt="{{ $course->title }}" 
                                              class="h-32 w-full object-cover rounded-lg">
                                     </div>

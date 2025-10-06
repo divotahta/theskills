@@ -75,7 +75,7 @@
                                 <!-- Course Thumbnail -->
                                 <div class="aspect-video bg-gray-100">
                                     @if($course->thumbnail)
-                                        <img src="{{ Storage::url($course->thumbnail) }}" 
+                                        <img src="{{ $course->thumbnail_url }}" 
                                              class="w-full h-full object-cover"
                                              alt="{{ $course->title }}">
                                     @else

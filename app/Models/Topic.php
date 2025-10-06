@@ -19,4 +19,9 @@ class Topic extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function contents()
+    {
+        return $this->hasMany(CourseContent::class)->orderBy('order');
+    }
 } 

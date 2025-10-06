@@ -39,18 +39,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,
-        ]);
-
-        // Create sample course
-        Course::create([
-            'title' => 'Sample Course',
-            'description' => 'This is a sample course',
-            'instructor_id' => 2,
-            'price' => 99.99,
-            'video_type' => 'youtube',
-            'video_url' => 'https://youtube.com/watch?v=sample',
-            'is_public' => true,
-            'category_id' => 1,
+            CourseSeeder::class,
+            TopicSeeder::class,
+            CourseContentSeeder::class,
+            EnrollmentSeeder::class,
         ]);
     }
 } 

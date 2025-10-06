@@ -117,20 +117,14 @@ class CourseController extends Controller
             'is_public' => 'boolean',
             'video_type' => 'required|in:youtube,vimeo,native',
             'video_url' => 'required|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        // dd($request->all());
 
         $data = $request->all();
 
-        // Handle thumbnail dengan pengecekan validitas
-        if ($request->hasFile('thumbnail')) {
+        // Handle thumbnail upload
+        if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
             $image = $request->file('thumbnail');
-
-            // 🔥 PENTING: Cek apakah file benar-benar valid
-            if (!$image->isValid()) {
-                return back()->withErrors(['thumbnail' => 'File thumbnail tidak valid atau terlalu besar.']);
-            }
 
             $extension = $image->getClientOriginalExtension();
             if (empty($extension)) {
@@ -138,9 +132,12 @@ class CourseController extends Controller
             }
 
             $imageName = Str::slug($request->title) . '-' . time() . '.' . $extension;
+
+            // Simpan ke: storage/app/public/course-thumbnails/
             $image->storeAs('public/course-thumbnails', $imageName);
 
-            $data['thumbnail'] = $imageName;
+            // ✅ SIMPAN PATH RELATIF KE DATABASE
+            $data['thumbnail'] = 'course-thumbnails/' . $imageName;
         }
 
         Course::create($data);
@@ -185,7 +182,7 @@ class CourseController extends Controller
             $query->where('video_type', $request->video_type);
         }
 
-        $courses = $query->latest()->paginate(15);
+        $courses = $query->withCount(['enrollments', 'contents'])->latest()->paginate(15);
         $categories = Category::all();
         $totalEnrollments = Enrollment::count();
 
@@ -228,9 +225,23 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course->load(['instructor', 'category', 'topics', 'enrollments.user']);
+        $course->load(['instructor', 'category', 'topics', 'enrollments.user', 'contents' => function($query) {
+            $query->orderBy('order');
+        }]);
 
         return view('admin.courses.show', compact('course'));
+    }
+
+    /**
+     * Show course learning interface
+     */
+    public function learn(Course $course)
+    {
+        $course->load(['instructor', 'category', 'topics', 'contents' => function($query) {
+            $query->orderBy('order');
+        }]);
+
+        return view('admin.courses.learn', compact('course'));
     }
 
     /**

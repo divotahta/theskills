@@ -17,6 +17,7 @@ use App\Http\Controllers\Student\ProfileController as StudentProfileController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\CourseContentController;
 
 // Debug route for file upload testing
 Route::post('/debug-upload', function(Request $request) {
@@ -46,7 +47,9 @@ Route::post('/debug-upload', function(Request $request) {
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+Route::get('/courses', function () {
+    return view('courses');
+})->name('courses.index');
 Route::get('/courses/{course}', [PublicCourseController::class, 'show'])->name('courses.show');
 
 // Auth routes
@@ -62,6 +65,24 @@ Route::middleware(['auth'])->group(function () {
         }
         return redirect('/');
     })->name('dashboard');
+});
+
+// Student routes
+Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/profile/edit', function () {
+        return view('student.profile.edit');
+    })->name('profile.edit');
+    
+    // Course routes
+    Route::get('/courses', [App\Http\Controllers\Student\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/my-courses', [App\Http\Controllers\Student\CourseController::class, 'myCourses'])->name('courses.my-courses');
+    Route::get('/courses/{course}', [App\Http\Controllers\Student\CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/learn', [App\Http\Controllers\Student\CourseController::class, 'learn'])->name('courses.learn');
+    Route::post('/courses/{course}/enroll', [App\Http\Controllers\Student\CourseController::class, 'enroll'])->name('courses.enroll');
+    Route::post('/courses/{course}/progress', [App\Http\Controllers\Student\CourseController::class, 'updateProgress'])->name('courses.progress');
+    Route::post('/courses/{course}/complete', [App\Http\Controllers\Student\CourseController::class, 'markCompleted'])->name('courses.complete');
 });
 
 // Admin routes
@@ -97,8 +118,36 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])
         ->name('admin.courses.toggle-status');
     
+    Route::get('/courses/{course}/learn', [App\Http\Controllers\Admin\CourseController::class, 'learn'])
+        ->name('admin.courses.learn');
+    
     Route::delete('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'destroy'])
         ->name('admin.courses.destroy');
+    
+    // Course Content management routes
+    Route::get('/course-contents', [CourseContentController::class, 'index'])
+        ->name('admin.course-contents.index');
+    
+    Route::get('/courses/{course}/course-contents/create', [CourseContentController::class, 'createFromCourse'])
+        ->name('admin.course-contents.create-from-course');
+    
+    Route::post('/course-contents', [CourseContentController::class, 'store'])
+        ->name('admin.course-contents.store');
+    
+    Route::get('/course-contents/{courseContent}', [CourseContentController::class, 'show'])
+        ->name('admin.course-contents.show');
+    
+    Route::get('/courses/{course}/course-contents/{courseContent}/edit', [CourseContentController::class, 'edit'])
+        ->name('admin.course-contents.edit');
+    
+    Route::put('/courses/{course}/course-contents/{courseContent}', [CourseContentController::class, 'update'])
+        ->name('admin.course-contents.update');
+    
+    Route::patch('/course-contents/{courseContent}/toggle-status', [CourseContentController::class, 'toggleStatus'])
+        ->name('admin.course-contents.toggle-status');
+    
+    Route::delete('/course-contents/{courseContent}', [CourseContentController::class, 'destroy'])
+        ->name('admin.course-contents.destroy');
 });
 
 // Instructor routes
