@@ -18,30 +18,11 @@ use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\CourseContentController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\CourseLevelController as AdminCourseLevelController;
 
-// Debug route for file upload testing
-Route::post('/debug-upload', function(Request $request) {
-    \Log::info('Debug upload request:', [
-        'has_file' => $request->hasFile('thumbnail'),
-        'file_valid' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->isValid() : 'no file',
-        'file_size' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->getSize() : 'no file',
-        'file_error' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->getError() : 'no file',
-        'file_path' => $request->hasFile('thumbnail') ? $request->file('thumbnail')->path() : 'no file',
-        'all_files' => $request->allFiles()
-    ]);
-    
-    if ($request->hasFile('thumbnail')) {
-        $file = $request->file('thumbnail');
-        try {
-            $path = $file->store('test-uploads', 'public');
-            return response()->json(['success' => true, 'path' => $path]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
-        }
-    }
-    
-    return response()->json(['success' => false, 'error' => 'No file uploaded']);
-});
+
 
 // Public routes
 Route::get('/', function () {
@@ -93,6 +74,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('/admin/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('/admin/profile/show', [AdminProfileController::class, 'show'])->name('admin.profile.show');
+    Route::post('/admin/profile/cover', [AdminProfileController::class, 'updateCover'])->name('admin.profile.update-cover');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -124,30 +106,90 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'destroy'])
         ->name('admin.courses.destroy');
     
-    // Course Content management routes
-    Route::get('/course-contents', [CourseContentController::class, 'index'])
-        ->name('admin.course-contents.index');
+    // Course Content management routes (nested under courses)
+    Route::get('/courses/{course}/contents', [CourseContentController::class, 'index'])
+        ->name('admin.courses.contents.index');
     
-    Route::get('/courses/{course}/course-contents/create', [CourseContentController::class, 'createFromCourse'])
-        ->name('admin.course-contents.create-from-course');
+    Route::get('/courses/{course}/contents/create', [CourseContentController::class, 'create'])
+        ->name('admin.courses.contents.create');
     
-    Route::post('/course-contents', [CourseContentController::class, 'store'])
-        ->name('admin.course-contents.store');
+    Route::post('/courses/{course}/contents', [CourseContentController::class, 'store'])
+        ->name('admin.courses.contents.store');
     
-    Route::get('/course-contents/{courseContent}', [CourseContentController::class, 'show'])
-        ->name('admin.course-contents.show');
+    Route::get('/courses/{course}/contents/{courseContent}', [CourseContentController::class, 'show'])
+        ->name('admin.courses.contents.show');
     
-    Route::get('/courses/{course}/course-contents/{courseContent}/edit', [CourseContentController::class, 'edit'])
-        ->name('admin.course-contents.edit');
+    Route::get('/courses/{course}/contents/{courseContent}/edit', [CourseContentController::class, 'edit'])
+        ->name('admin.courses.contents.edit');
     
-    Route::put('/courses/{course}/course-contents/{courseContent}', [CourseContentController::class, 'update'])
-        ->name('admin.course-contents.update');
+    Route::put('/courses/{course}/contents/{courseContent}', [CourseContentController::class, 'update'])
+        ->name('admin.courses.contents.update');
     
-    Route::patch('/course-contents/{courseContent}/toggle-status', [CourseContentController::class, 'toggleStatus'])
-        ->name('admin.course-contents.toggle-status');
+    Route::patch('/courses/{course}/contents/{courseContent}/toggle-status', [CourseContentController::class, 'toggleStatus'])
+        ->name('admin.courses.contents.toggle-status');
     
-    Route::delete('/course-contents/{courseContent}', [CourseContentController::class, 'destroy'])
-        ->name('admin.course-contents.destroy');
+    Route::delete('/courses/{course}/contents/{courseContent}', [CourseContentController::class, 'destroy'])
+        ->name('admin.courses.contents.destroy');
+    
+    // Category management routes
+    Route::get('/categories', [AdminCategoryController::class, 'index'])
+        ->name('admin.categories.index');
+    Route::get('/categories/create', [AdminCategoryController::class, 'create'])
+        ->name('admin.categories.create');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])
+        ->name('admin.categories.store');
+    Route::get('/categories/{category}', [AdminCategoryController::class, 'show'])
+        ->name('admin.categories.show');
+    Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])
+        ->name('admin.categories.edit');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])
+        ->name('admin.categories.update');
+    Route::patch('/categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])
+        ->name('admin.categories.toggle-status');
+    Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])
+        ->name('admin.categories.destroy');
+    
+    // User management routes
+    Route::get('/users', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+    Route::get('/users/create', [AdminUserController::class, 'create'])
+        ->name('admin.users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])
+        ->name('admin.users.store');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])
+        ->name('admin.users.show');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])
+        ->name('admin.users.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])
+        ->name('admin.users.update');
+    Route::patch('/users/{user}/toggle-verification', [AdminUserController::class, 'toggleVerification'])
+        ->name('admin.users.toggle-verification');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
+        ->name('admin.users.destroy');
+    
+    // Specific user type routes
+    Route::get('/students', [AdminUserController::class, 'students'])
+        ->name('admin.students.index');
+    Route::get('/instructors', [AdminUserController::class, 'instructors'])
+        ->name('admin.instructors.index');
+    
+    // Course Level management routes
+    Route::get('/course-levels', [AdminCourseLevelController::class, 'index'])
+        ->name('admin.course-levels.index');
+    Route::get('/course-levels/create', [AdminCourseLevelController::class, 'create'])
+        ->name('admin.course-levels.create');
+    Route::post('/course-levels', [AdminCourseLevelController::class, 'store'])
+        ->name('admin.course-levels.store');
+    Route::get('/course-levels/{courseLevel}', [AdminCourseLevelController::class, 'show'])
+        ->name('admin.course-levels.show');
+    Route::get('/course-levels/{courseLevel}/edit', [AdminCourseLevelController::class, 'edit'])
+        ->name('admin.course-levels.edit');
+    Route::put('/course-levels/{courseLevel}', [AdminCourseLevelController::class, 'update'])
+        ->name('admin.course-levels.update');
+    Route::patch('/course-levels/{courseLevel}/toggle-status', [AdminCourseLevelController::class, 'toggleStatus'])
+        ->name('admin.course-levels.toggle-status');
+    Route::delete('/course-levels/{courseLevel}', [AdminCourseLevelController::class, 'destroy'])
+        ->name('admin.course-levels.destroy');
 });
 
 // Instructor routes
@@ -160,6 +202,7 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
         Route::get('/profile/edit', [InstructorProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [InstructorProfileController::class, 'update'])->name('profile.update');
         Route::get('/profile/{instructor}', [InstructorProfileController::class, 'show'])->name('profile.show');
+        Route::post('/profile/cover', [InstructorProfileController::class, 'updateCover'])->name('profile.update-cover');
         
         // Courses
         Route::get('/courses', [InstructorCourseController::class, 'index'])->name('courses.index');
@@ -177,8 +220,13 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::prefix('student')->name('student.')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/profile', [StudentProfileController::class, 'edit'])->name('profile.edit');
+        
+        // Student profile routes
+        Route::get('/profile', [StudentProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile/edit', [StudentProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [StudentProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile/avatar', [StudentProfileController::class, 'deleteAvatar'])->name('profile.delete-avatar');
+        Route::post('/profile/cover', [StudentProfileController::class, 'updateCover'])->name('profile.update-cover');
         
         // Student course routes
         Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');

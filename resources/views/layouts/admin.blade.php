@@ -40,12 +40,6 @@
                         'icon' => 'create',
                     ],
                     [
-                        'label' => 'Course Contents',
-                        'route' => 'admin.course-contents.index',
-                        'active' => 'admin.course-contents.*',
-                        'icon' => 'contents',
-                    ],
-                    [
                         'label' => 'Categories',
                         'route' => 'admin.categories.index',
                         'active' => 'admin.categories.*',

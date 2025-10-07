@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProfileController extends Controller
 {
@@ -16,7 +18,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        return view('admin.profile.edit', [
+        return view('admin.profile-edit-tutor', [
             'user' => Auth::user()
         ]);
     }
@@ -65,8 +67,44 @@ class ProfileController extends Controller
      */
     public function show()
     {
-        return view('admin.profile.show', [
+        return view('admin.profile-tutor', [
             'user' => Auth::user()
         ]);
+    }
+
+    /**
+     * Update cover photo
+     */
+    public function updateCover(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+        ]);
+
+        try {
+            // Delete old cover photo if exists
+            if ($user->cover_photo && Storage::disk('public')->exists($user->cover_photo)) {
+                Storage::disk('public')->delete($user->cover_photo);
+            }
+
+            // Store new cover photo
+            $path = $request->file('cover_photo')->store('covers', 'public');
+            $user->cover_photo = $path;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cover photo updated successfully!',
+                'cover_url' => Storage::url($path)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating cover photo: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

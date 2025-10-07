@@ -11,12 +11,19 @@ class Course extends Model
         'description',
         'instructor_id',
         'category_id',
+        'course_level_id',
         'price',
         'thumbnail',
+        'duration',
+        'language',
+        'prerequisites',
+        'what_you_will_learn',
+        'course_includes',
         'is_public',
         'video_type',
         'video_url',
-        'max_students'
+        'max_students',
+        'is_published'
     ];
 
     public function getThumbnailUrlAttribute()
@@ -46,6 +53,11 @@ class Course extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function courseLevel()
+    {
+        return $this->belongsTo(CourseLevel::class);
     }
 
     public function enrollments()

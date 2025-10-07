@@ -150,7 +150,7 @@
                     <div class="h-full flex items-center justify-center" id="video-container">
                         @if($course->contents->first()?->hasVideo())
                             <iframe id="video-player" 
-                                    src="{{ $course->contents->first()->youtube_embed_url }}" 
+                                    src="{{ $course->contents->first()->getYoutubeEmbedUrl() }}" 
                                     frameborder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                     allowfullscreen
@@ -302,9 +302,23 @@
             // Update video player
             const videoContainer = document.getElementById('video-container');
             if (content.has_video) {
+                // Convert YouTube URL to embed format
+                let embedUrl = content.youtube_embed_url;
+                if (embedUrl.includes('youtube.com/watch')) {
+                    const videoId = embedUrl.match(/[?&]v=([^&]+)/)?.[1];
+                    if (videoId) {
+                        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    }
+                } else if (embedUrl.includes('youtu.be/')) {
+                    const videoId = embedUrl.match(/youtu\.be\/([^?&]+)/)?.[1];
+                    if (videoId) {
+                        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    }
+                }
+                
                 videoContainer.innerHTML = `
                     <iframe id="video-player" 
-                            src="${content.youtube_embed_url}" 
+                            src="${embedUrl}" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                             allowfullscreen

@@ -90,4 +90,39 @@ class ProfileController extends Controller
             return back()->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Update cover photo via AJAX
+     */
+    public function updateCover(Request $request)
+    {
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+        ]);
+
+        try {
+            $user = Auth::user();
+            
+            // Delete old cover photo if exists
+            if ($user->cover_photo && Storage::disk('public')->exists($user->cover_photo)) {
+                Storage::disk('public')->delete($user->cover_photo);
+            }
+
+            // Store new cover photo
+            $path = $request->file('cover_photo')->store('covers', 'public');
+            $user->cover_photo = $path;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cover photo updated successfully!',
+                'cover_url' => Storage::disk('public')->url($path)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating cover photo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -55,6 +55,37 @@ class CourseContent extends Model
     }
 
     /**
+     * Get YouTube embed URL
+     */
+    public function getYoutubeEmbedUrl()
+    {
+        if (empty($this->youtube_embed_url)) {
+            return null;
+        }
+
+        $youtubeUrl = $this->youtube_embed_url;
+        
+        // Convert YouTube URL to embed format if needed
+        if (strpos($youtubeUrl, 'youtube.com/watch') !== false) {
+            $videoId = '';
+            if (preg_match('/[?&]v=([^&]+)/', $youtubeUrl, $matches)) {
+                $videoId = $matches[1];
+            }
+            return 'https://www.youtube.com/embed/' . $videoId;
+        } elseif (strpos($youtubeUrl, 'youtu.be/') !== false) {
+            $videoId = '';
+            if (preg_match('/youtu\.be\/([^?&]+)/', $youtubeUrl, $matches)) {
+                $videoId = $matches[1];
+            }
+            return 'https://www.youtube.com/embed/' . $videoId;
+        } elseif (strpos($youtubeUrl, 'youtube.com/embed/') !== false) {
+            return $youtubeUrl;
+        } else {
+            return $youtubeUrl;
+        }
+    }
+
+    /**
      * Check if content has file attachment
      */
     public function hasFile()

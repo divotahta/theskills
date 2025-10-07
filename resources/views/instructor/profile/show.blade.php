@@ -12,9 +12,22 @@
         <!-- Cover Photo -->
         @if($instructor->cover_photo)
             <img src="{{ Storage::url($instructor->cover_photo) }}" 
-                 class="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
+                 class="absolute inset-0 w-full h-full object-cover"
                  alt="Cover Photo">
         @endif
+        
+        <!-- Cover Photo Edit Button -->
+        <div class="absolute top-4 right-4">
+            <button onclick="document.getElementById('cover-photo-input').click()" 
+                    class="bg-white bg-opacity-20 backdrop-blur-sm text-white rounded-lg px-4 py-2 hover:bg-opacity-30 transition-all duration-200 flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span class="text-sm font-medium">Change Cover</span>
+            </button>
+            <input type="file" id="cover-photo-input" class="hidden" accept="image/*">
+        </div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-32">
@@ -26,15 +39,23 @@
                     <div class="relative">
                         @if($instructor->profile_photo)
                             <img src="{{ Storage::url($instructor->profile_photo) }}" 
-                                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg"
+                                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                  alt="{{ $instructor->name }}">
                         @else
-                            <div class="w-32 h-32 rounded-full bg-gray-200 border-4 border-white shadow-lg flex items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
+                            <div class="w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 border-4 border-white shadow-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-2xl">{{ substr($instructor->name, 0, 1) }}</span>
                             </div>
                         @endif
+                        
+                        <!-- Edit Profile Button -->
+                        <div class="absolute -bottom-2 -right-2">
+                            <a href="{{ route('instructor.profile.edit') }}" 
+                               class="bg-blue-600 text-white rounded-full p-2 shadow-lg hover:bg-blue-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Profile Info -->
@@ -108,4 +129,47 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Handle cover photo upload
+        document.getElementById('cover-photo-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Create form data
+                const formData = new FormData();
+                formData.append('cover_photo', file);
+                formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+                // Show loading state
+                const button = document.querySelector('button[onclick*="cover-photo-input"]');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span class="text-sm font-medium ml-2">Uploading...</span>';
+                button.disabled = true;
+
+                // Upload file
+                fetch('{{ route("instructor.profile.update-cover") }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reload page to show new cover photo
+                        window.location.reload();
+                    } else {
+                        alert('Error uploading cover photo: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error uploading cover photo');
+                })
+                .finally(() => {
+                    // Reset button
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
+            }
+        });
+    </script>
 </x-app-layout> 

@@ -38,11 +38,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            CategorySeeder::class,
-            CourseSeeder::class,
-            TopicSeeder::class,
-            CourseContentSeeder::class,
-            EnrollmentSeeder::class,
+            // ChildFriendlyCategorySeeder::class,
+            // ChildFriendlyCourseSeeder::class,
+            // TopicSeeder::class,
+            // CourseContentSeeder::class,
+            // EnrollmentSeeder::class,
         ]);
     }
 } 

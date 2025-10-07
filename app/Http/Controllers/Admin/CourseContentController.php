@@ -15,54 +15,30 @@ class CourseContentController extends Controller
     /**
      * Display a listing of course contents
      */
-    public function index(Request $request)
+    public function index(Course $course)
     {
-        $query = CourseContent::with(['course', 'topic']);
+        $contents = $course->contents()->with(['topic'])->orderBy('order')->paginate(15);
+        $topics = $course->topics;
 
-        // Filter by course
-        if ($request->filled('course_id')) {
-            $query->where('course_id', $request->course_id);
-        }
-
-        // Filter by topic
-        if ($request->filled('topic_id')) {
-            $query->where('topic_id', $request->topic_id);
-        }
-
-        // Search functionality
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('description', 'like', "%{$searchTerm}%")
-                  ->orWhere('material_content', 'like', "%{$searchTerm}%");
-            });
-        }
-
-        $contents = $query->orderBy('order')->paginate(15);
-        $courses = Course::all();
-        $topics = Topic::all();
-
-        return view('admin.course-contents.index', compact('contents', 'courses', 'topics'));
+        return view('admin.courses.contents-tutor', compact('course', 'contents', 'topics'));
     }
 
     /**
      * Show the form for creating a new course content from course
      */
-    public function createFromCourse(Course $course)
+    public function create(Course $course)
     {
         $topics = $course->topics;
         
-        return view('admin.course-contents.create', compact('course', 'topics'));
+        return view('admin.courses.contents-create-tutor', compact('course', 'topics'));
     }
 
     /**
      * Store a newly created course content
      */
-    public function store(Request $request)
+    public function store(Request $request, Course $course)
     {
         $request->validate([
-            'course_id' => 'required|exists:courses,id',
             'topic_id' => 'nullable|exists:topics,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -75,6 +51,7 @@ class CourseContentController extends Controller
         ]);
 
         $data = $request->except(['file', '_token']);
+        $data['course_id'] = $course->id;
         $data['is_published'] = $request->boolean('is_published');
 
         // Handle file upload
@@ -95,23 +72,22 @@ class CourseContentController extends Controller
 
         CourseContent::create($data);
 
-        // Redirect berdasarkan cara akses
-        if ($request->has('from_course')) {
-            return redirect()->route('admin.courses.show', $data['course_id'])
-                ->with('success', 'Materi kursus berhasil ditambahkan');
-        }
-
-        return redirect()->route('admin.course-contents.index')
-            ->with('success', 'Materi kursus berhasil ditambahkan');
+        return redirect()->route('admin.courses.contents.index', $course)
+            ->with('success', 'Course content created successfully!');
     }
 
     /**
      * Display the specified course content
      */
-    public function show(CourseContent $courseContent)
+    public function show(Course $course, CourseContent $courseContent)
     {
+        // Pastikan materi milik kursus yang dimaksud
+        if ($courseContent->course_id !== $course->id) {
+            abort(404);
+        }
+        
         $courseContent->load(['course', 'topic']);
-        return view('admin.course-contents.show', compact('courseContent'));
+        return view('admin.courses.contents-show-tutor', compact('course', 'courseContent'));
     }
 
     /**
@@ -126,7 +102,7 @@ class CourseContentController extends Controller
         
         $topics = $course->topics;
         
-        return view('admin.course-contents.edit', compact('course', 'courseContent', 'topics'));
+        return view('admin.courses.contents-edit-tutor', compact('course', 'courseContent', 'topics'));
     }
 
     /**
@@ -172,15 +148,20 @@ class CourseContentController extends Controller
 
         $courseContent->update($data);
 
-        return redirect()->route('admin.courses.show', $course)
-            ->with('success', 'Materi kursus berhasil diperbarui');
+        return redirect()->route('admin.courses.contents.index', $course)
+            ->with('success', 'Course content updated successfully!');
     }
 
     /**
      * Remove the specified course content
      */
-    public function destroy(CourseContent $courseContent)
+    public function destroy(Course $course, CourseContent $courseContent)
     {
+        // Pastikan materi milik kursus yang dimaksud
+        if ($courseContent->course_id !== $course->id) {
+            abort(404);
+        }
+
         try {
             // Delete file if exists
             if ($courseContent->file_path) {
@@ -189,20 +170,28 @@ class CourseContentController extends Controller
 
             $courseContent->delete();
 
-            return back()->with('success', 'Materi kursus berhasil dihapus');
+            return redirect()->route('admin.courses.contents.index', $course)
+                ->with('success', 'Course content deleted successfully!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menghapus materi kursus. Silakan coba lagi.');
+            return redirect()->route('admin.courses.contents.index', $course)
+                ->with('error', 'Failed to delete course content. Please try again.');
         }
     }
 
     /**
      * Toggle published status
      */
-    public function toggleStatus(CourseContent $courseContent)
+    public function toggleStatus(Course $course, CourseContent $courseContent)
     {
+        // Pastikan materi milik kursus yang dimaksud
+        if ($courseContent->course_id !== $course->id) {
+            abort(404);
+        }
+
         $courseContent->update(['is_published' => !$courseContent->is_published]);
         
-        $status = $courseContent->is_published ? 'dipublikasikan' : 'disembunyikan';
-        return back()->with('success', "Materi telah {$status}");
+        $status = $courseContent->is_published ? 'published' : 'unpublished';
+        return redirect()->route('admin.courses.contents.index', $course)
+            ->with('success', "Course content {$status} successfully!");
     }
 }

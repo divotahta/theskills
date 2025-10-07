@@ -58,16 +58,17 @@ class DashboardController extends Controller
             'cancelled' => Enrollment::where('status', 'cancelled')->count(),
         ];
 
-        return view('admin.dashboard', compact(
-            'totalUsers',
-            'totalCourses', 
-            'totalEnrollments',
-            'totalRevenue',
-            'recentEnrollments',
-            'recentCourses',
-            'userStats',
-            'courseStats',
-            'enrollmentStats'
+        // Prepare stats for Tutor LMS Pro theme
+        $stats = [
+            'total_courses' => $totalCourses,
+            'total_students' => $userStats['students'],
+            'total_revenue' => $totalRevenue,
+            'active_instructors' => $userStats['instructors'],
+        ];
+
+        return view('admin.dashboard-tutor', compact(
+            'stats',
+            'recentCourses'
         ));
     }
 }
