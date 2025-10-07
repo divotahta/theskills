@@ -79,4 +79,42 @@ class Course extends Model
     {
         return $this->enrollments()->count();
     }
+
+    /**
+     * Get course progress for a specific user
+     */
+    public function getUserProgress($userId)
+    {
+        $totalContents = $this->contents()->count();
+        if ($totalContents === 0) {
+            return [
+                'completed' => 0,
+                'total' => 0,
+                'percentage' => 0,
+                'completed_contents' => collect(),
+            ];
+        }
+
+        $completedContents = $this->contents()
+            ->whereHas('progress', function($query) use ($userId) {
+                $query->where('user_id', $userId)->where('is_completed', true);
+            })
+            ->get();
+
+        return [
+            'completed' => $completedContents->count(),
+            'total' => $totalContents,
+            'percentage' => round(($completedContents->count() / $totalContents) * 100),
+            'completed_contents' => $completedContents,
+        ];
+    }
+
+    /**
+     * Check if course is completed by user
+     */
+    public function isCompletedBy($userId)
+    {
+        $progress = $this->getUserProgress($userId);
+        return $progress['completed'] === $progress['total'] && $progress['total'] > 0;
+    }
 } 

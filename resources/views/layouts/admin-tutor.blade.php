@@ -54,6 +54,10 @@
                            class="text-sm font-medium {{ request()->routeIs('admin.course-levels.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
                             Course Levels
                         </a>
+                        <a href="{{ route('admin.topics.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.topics.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Topics
+                        </a>
                         <a href="{{ route('admin.users.index') }}" 
                            class="text-sm font-medium {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.students.*') || request()->routeIs('admin.instructors.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
                             Users
@@ -141,6 +145,10 @@
                         <a href="{{ route('admin.course-levels.index') }}" 
                            class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.course-levels.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
                             Course Levels
+                        </a>
+                        <a href="{{ route('admin.topics.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.topics.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Topics
                         </a>
                         <a href="{{ route('admin.users.index') }}" 
                            class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.students.*') || request()->routeIs('admin.instructors.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">

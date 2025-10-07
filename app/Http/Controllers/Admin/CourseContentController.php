@@ -15,9 +15,16 @@ class CourseContentController extends Controller
     /**
      * Display a listing of course contents
      */
-    public function index(Course $course)
+    public function index(Request $request, Course $course)
     {
-        $contents = $course->contents()->with(['topic'])->orderBy('order')->paginate(15);
+        $query = $course->contents()->with(['topic']);
+
+        // Filter by topic if provided
+        if ($request->filled('topic')) {
+            $query->where('topic_id', $request->topic);
+        }
+
+        $contents = $query->orderBy('order')->paginate(15);
         $topics = $course->topics;
 
         return view('admin.courses.contents-tutor', compact('course', 'contents', 'topics'));
@@ -49,6 +56,8 @@ class CourseContentController extends Controller
             'order' => 'nullable|integer|min:0',
             'is_published' => 'boolean',
         ]);
+
+        // dd($request->all());
 
         $data = $request->except(['file', '_token']);
         $data['course_id'] = $course->id;

@@ -7,9 +7,12 @@ use App\Models\Course;
 use App\Models\Category;
 use App\Models\CourseLevel;
 use App\Models\Enrollment;
+use App\Models\Topic;
+use App\Models\ContentProgress;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
@@ -144,11 +147,22 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course->load(['instructor', 'category', 'topics', 'enrollments.user', 'contents' => function($query) {
-            $query->orderBy('order');
-        }]);
+        $course->load([
+            'instructor', 
+            'category', 
+            'courseLevel',
+            'topics' => function($query) {
+                $query->with(['contents' => function($q) {
+                    $q->orderBy('order');
+                }])->orderBy('order');
+            },
+            'enrollments.user', 
+            'contents' => function($query) {
+                $query->orderBy('order');
+            }
+        ]);
 
-        return view('admin.courses-show-tutor', compact('course'));
+        return view('admin.courses.show-tutor', compact('course'));
     }
 
     /**
@@ -159,9 +173,12 @@ class CourseController extends Controller
         $course->load(['instructor', 'category', 'topics', 'contents' => function($query) {
             $query->orderBy('order');
         }]);
-        // dd($course->contents->first()->youtube_embed_url);
 
-        return view('admin.courses.learn', compact('course'));
+        // Get user progress for this course
+        $userId = Auth::id();
+        $progress = $course->getUserProgress($userId);
+
+        return view('admin.courses.learn', compact('course', 'progress'));
     }
 
     /**
@@ -254,5 +271,202 @@ class CourseController extends Controller
                 ->withInput()
                 ->with('error', 'Failed to update course. Please try again.');
         }
+    }
+
+    /**
+     * Show topics for a specific course
+     */
+    public function topics(Course $course)
+    {
+        $topics = $course->topics()->withCount('contents')->orderBy('order')->paginate(15);
+        return view('admin.courses.topics-tutor', compact('course', 'topics'));
+    }
+
+    /**
+     * Show form to create a new topic for a course
+     */
+    public function createTopic(Course $course)
+    {
+        return view('admin.courses.topics-create-tutor', compact('course'));
+    }
+
+    /**
+     * Store a new topic for a course
+     */
+    public function storeTopic(Request $request, Course $course)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0',
+            'duration' => 'nullable|string|max:50',
+        ]);
+
+        $data = $request->all();
+        $data['course_id'] = $course->id;
+        
+        // Auto-set order if not provided
+        if (empty($data['order'])) {
+            $maxOrder = Topic::where('course_id', $course->id)->max('order') ?? 0;
+            $data['order'] = $maxOrder + 1;
+        }
+
+        Topic::create($data);
+
+        return redirect()->route('admin.courses.topics', $course)
+            ->with('success', 'Topic created successfully!');
+    }
+
+    /**
+     * Show form to edit a topic
+     */
+    public function editTopic(Course $course, Topic $topic)
+    {
+        // Ensure topic belongs to course
+        if ($topic->course_id !== $course->id) {
+            abort(404);
+        }
+        
+        return view('admin.courses.topics-edit-tutor', compact('course', 'topic'));
+    }
+
+    /**
+     * Update a topic
+     */
+    public function updateTopic(Request $request, Course $course, Topic $topic)
+    {
+        // Ensure topic belongs to course
+        if ($topic->course_id !== $course->id) {
+            abort(404);
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0',
+            'duration' => 'nullable|string|max:50',
+        ]);
+
+        $data = $request->all();
+        $data['course_id'] = $course->id;
+        
+        // Auto-set order if not provided
+        if (empty($data['order'])) {
+            $maxOrder = Topic::where('course_id', $course->id)->max('order') ?? 0;
+            $data['order'] = $maxOrder + 1;
+        }
+
+        $topic->update($data);
+
+        return redirect()->route('admin.courses.topics', $course)
+            ->with('success', 'Topic updated successfully!');
+    }
+
+    /**
+     * Delete a topic
+     */
+    public function destroyTopic(Course $course, Topic $topic)
+    {
+        // Ensure topic belongs to course
+        if ($topic->course_id !== $course->id) {
+            abort(404);
+        }
+
+        // Check if topic has contents
+        if ($topic->contents()->count() > 0) {
+            return redirect()->route('admin.courses.topics', $course)
+                ->with('error', 'Cannot delete topic that has contents. Please move or delete the contents first.');
+        }
+
+        $topic->delete();
+
+        return redirect()->route('admin.courses.topics', $course)
+            ->with('success', 'Topic deleted successfully!');
+    }
+
+    /**
+     * Toggle content completion status
+     */
+    public function toggleContentProgress(Request $request, Course $course)
+    {
+        $request->validate([
+            'content_id' => 'required|exists:course_contents,id',
+            'completed' => 'required|boolean',
+        ]);
+
+        $userId = Auth::id();
+        $contentId = $request->content_id;
+        $completed = $request->boolean('completed');
+
+        // Ensure content belongs to this course
+        $content = $course->contents()->findOrFail($contentId);
+
+        // Get or create progress record
+        $progress = ContentProgress::firstOrCreate(
+            [
+                'user_id' => $userId,
+                'course_content_id' => $contentId,
+            ],
+            [
+                'is_completed' => false,
+                'time_spent' => 0,
+            ]
+        );
+
+        // Update completion status
+        if ($completed) {
+            $progress->markAsCompleted();
+        } else {
+            $progress->markAsIncomplete();
+        }
+
+        // Get updated progress for the course
+        $courseProgress = $course->getUserProgress($userId);
+
+        return response()->json([
+            'success' => true,
+            'completed' => $progress->is_completed,
+            'completed_at' => $progress->completed_at?->format('M j, Y g:i A'),
+            'course_progress' => $courseProgress,
+        ]);
+    }
+
+    /**
+     * Update content time spent
+     */
+    public function updateContentTime(Request $request, Course $course)
+    {
+        $request->validate([
+            'content_id' => 'required|exists:course_contents,id',
+            'time_spent' => 'required|integer|min:0',
+        ]);
+
+        $userId = Auth::id();
+        $contentId = $request->content_id;
+        $timeSpent = $request->time_spent;
+
+        // Ensure content belongs to this course
+        $course->contents()->findOrFail($contentId);
+
+        // Get or create progress record
+        $progress = ContentProgress::firstOrCreate(
+            [
+                'user_id' => $userId,
+                'course_content_id' => $contentId,
+            ],
+            [
+                'is_completed' => false,
+                'time_spent' => 0,
+            ]
+        );
+
+        // Update time spent
+        $progress->updateTimeSpent($timeSpent);
+
+        return response()->json([
+            'success' => true,
+            'time_spent' => $progress->time_spent,
+            'formatted_time' => $progress->formatted_time_spent,
+        ]);
     }
 }

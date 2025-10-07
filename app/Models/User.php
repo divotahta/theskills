@@ -65,6 +65,11 @@ class User extends Authenticatable
         });
     }
 
+    public function contentProgress()
+    {
+        return $this->hasMany(ContentProgress::class);
+    }
+
     public function getStudentsCountAttribute()
     {
         return Enrollment::whereIn('course_id', $this->courses->pluck('id'))->count();

@@ -100,4 +100,29 @@ class CourseContent extends Model
     {
         return !empty($this->announcement);
     }
+
+    /**
+     * Get the progress records for this content
+     */
+    public function progress()
+    {
+        return $this->hasMany(ContentProgress::class);
+    }
+
+    /**
+     * Get progress for a specific user
+     */
+    public function userProgress($userId)
+    {
+        return $this->progress()->where('user_id', $userId)->first();
+    }
+
+    /**
+     * Check if content is completed by user
+     */
+    public function isCompletedBy($userId)
+    {
+        $progress = $this->userProgress($userId);
+        return $progress ? $progress->is_completed : false;
+    }
 }

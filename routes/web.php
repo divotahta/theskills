@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\CourseContentController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CourseLevelController as AdminCourseLevelController;
+use App\Http\Controllers\Admin\TopicController as AdminTopicController;
 
 
 
@@ -75,6 +76,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('/admin/profile/show', [AdminProfileController::class, 'show'])->name('admin.profile.show');
     Route::post('/admin/profile/cover', [AdminProfileController::class, 'updateCover'])->name('admin.profile.update-cover');
+    Route::delete('/admin/profile/avatar', [AdminProfileController::class, 'deleteAvatar'])->name('admin.profile.delete-avatar');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -106,6 +108,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'destroy'])
         ->name('admin.courses.destroy');
     
+    // Course Topic management routes (nested under courses)
+    Route::get('/courses/{course}/topics', [App\Http\Controllers\Admin\CourseController::class, 'topics'])
+        ->name('admin.courses.topics');
+    Route::get('/courses/{course}/topics/create', [App\Http\Controllers\Admin\CourseController::class, 'createTopic'])
+        ->name('admin.courses.topics.create');
+    Route::post('/courses/{course}/topics', [App\Http\Controllers\Admin\CourseController::class, 'storeTopic'])
+        ->name('admin.courses.topics.store');
+    Route::get('/courses/{course}/topics/{topic}/edit', [App\Http\Controllers\Admin\CourseController::class, 'editTopic'])
+        ->name('admin.courses.topics.edit');
+    Route::put('/courses/{course}/topics/{topic}', [App\Http\Controllers\Admin\CourseController::class, 'updateTopic'])
+        ->name('admin.courses.topics.update');
+    Route::delete('/courses/{course}/topics/{topic}', [App\Http\Controllers\Admin\CourseController::class, 'destroyTopic'])
+        ->name('admin.courses.topics.destroy');
+
     // Course Content management routes (nested under courses)
     Route::get('/courses/{course}/contents', [CourseContentController::class, 'index'])
         ->name('admin.courses.contents.index');
@@ -130,6 +146,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     
     Route::delete('/courses/{course}/contents/{courseContent}', [CourseContentController::class, 'destroy'])
         ->name('admin.courses.contents.destroy');
+    
+    // Course Progress tracking routes
+    Route::post('/courses/{course}/toggle-progress', [App\Http\Controllers\Admin\CourseController::class, 'toggleContentProgress'])
+        ->name('admin.courses.toggle-progress');
+    Route::post('/courses/{course}/update-time', [App\Http\Controllers\Admin\CourseController::class, 'updateContentTime'])
+        ->name('admin.courses.update-time');
     
     // Category management routes
     Route::get('/categories', [AdminCategoryController::class, 'index'])
@@ -190,6 +212,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.course-levels.toggle-status');
     Route::delete('/course-levels/{courseLevel}', [AdminCourseLevelController::class, 'destroy'])
         ->name('admin.course-levels.destroy');
+
+    // Topic management routes
+    Route::get('/topics', [AdminTopicController::class, 'index'])
+        ->name('admin.topics.index');
+    Route::get('/topics/create', [AdminTopicController::class, 'create'])
+        ->name('admin.topics.create');
+    Route::post('/topics', [AdminTopicController::class, 'store'])
+        ->name('admin.topics.store');
+    Route::get('/topics/{topic}', [AdminTopicController::class, 'show'])
+        ->name('admin.topics.show');
+    Route::get('/topics/{topic}/edit', [AdminTopicController::class, 'edit'])
+        ->name('admin.topics.edit');
+    Route::put('/topics/{topic}', [AdminTopicController::class, 'update'])
+        ->name('admin.topics.update');
+    Route::delete('/topics/{topic}', [AdminTopicController::class, 'destroy'])
+        ->name('admin.topics.destroy');
 });
 
 // Instructor routes
@@ -230,16 +268,25 @@ Route::middleware(['auth', 'role:student'])->group(function () {
         
         // Student course routes
         Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/browse', [StudentCourseController::class, 'browse'])->name('courses.browse');
         Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
         Route::post('/courses/{course}/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
-        Route::post('/courses/{course}/unenroll', [StudentCourseController::class, 'unenroll'])->name('courses.unenroll');
-        Route::get('/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
         Route::get('/courses/{course}/learn', [StudentCourseController::class, 'learn'])->name('courses.learn');
-        Route::post('/courses/{course}/review', [StudentCourseController::class, 'review'])->name('courses.review');
-        Route::get('/courses/{course}/statistics', [StudentCourseController::class, 'statistics'])->name('courses.statistics');
-        Route::post('/courses/{course}/progress', [StudentCourseController::class, 'updateProgress'])->name('courses.progress');
-        Route::get('/courses/category/{category}', [StudentCourseController::class, 'category'])->name('courses.category');
-        Route::get('/courses/search', [StudentCourseController::class, 'search'])->name('courses.search');
+        Route::post('/courses/{course}/toggle-progress', [StudentCourseController::class, 'toggleContentProgress'])->name('courses.toggle-progress');
+        Route::post('/courses/{course}/update-time', [StudentCourseController::class, 'updateContentTime'])->name('courses.update-time');
+        
+        // Additional student routes
+        Route::get('/progress', function() {
+            return view('student.progress-tutor');
+        })->name('progress');
+        
+        Route::get('/certificates', function() {
+            return view('student.certificates-tutor');
+        })->name('certificates');
+        
+        Route::get('/settings', function() {
+            return view('student.settings-tutor');
+        })->name('settings');
     });
 });
 

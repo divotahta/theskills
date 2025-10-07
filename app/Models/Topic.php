@@ -24,4 +24,12 @@ class Topic extends Model
     {
         return $this->hasMany(CourseContent::class)->orderBy('order');
     }
+
+    /**
+     * Get the contents count for this topic
+     */
+    public function getContentsCountAttribute()
+    {
+        return $this->contents()->count();
+    }
 } 

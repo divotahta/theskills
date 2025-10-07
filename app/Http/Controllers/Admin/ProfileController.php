@@ -2,79 +2,112 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    /**
-     * Show the admin profile edit form
-     */
-    public function edit()
+    public function show()
     {
-        return view('admin.profile-edit-tutor', [
-            'user' => Auth::user()
-        ]);
+        $user = Auth::user();
+        return view('admin.profile.show', compact('user'));
     }
 
-    /**
-     * Update the admin profile
-     */
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('admin.profile.edit', compact('user'));
+    }
+
     public function update(Request $request)
     {
         /** @var User $user */
         $user = Auth::user();
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'current_password' => ['nullable', 'required_with:password'],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date|before:today',
+            'gender' => 'nullable|in:male,female,other',
+            'address' => 'nullable|string|max:500',
+            'bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'current_password' => 'nullable|required_with:password',
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
-        // Verify current password if changing password
-        if ($request->filled('password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
-                return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        $data = $request->except(['avatar', 'password', 'password_confirmation', 'current_password']);
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
             }
+
+            $avatar = $request->file('avatar');
+            $avatarName = 'avatar-' . $user->id . '-' . time() . '.' . $avatar->getClientOriginalExtension();
+            $avatarPath = $avatar->storeAs('avatars', $avatarName, 'public');
+            $data['avatar'] = $avatarPath;
         }
 
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-        ];
-
-        // Update password if provided
+        // Handle password change
         if ($request->filled('password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+            }
             $data['password'] = Hash::make($request->password);
         }
 
         $user->fill($data);
         $user->save();
 
-        return redirect()->route('admin.profile.edit')
-            ->with('success', 'Profile updated successfully!');
+        return redirect()->route('admin.profile.show')
+            ->with('success', 'Profil berhasil diperbarui!');
     }
 
-    /**
-     * Show admin profile details
-     */
-    public function show()
+    public function updatePassword(Request $request)
     {
-        return view('admin.profile-tutor', [
-            'user' => Auth::user()
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
         ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('admin.profile.show')
+            ->with('success', 'Password berhasil diubah!');
     }
 
-    /**
-     * Update cover photo
-     */
+    public function deleteAvatar()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->avatar = null;
+            $user->save();
+        }
+
+        return redirect()->route('admin.profile.show')
+            ->with('success', 'Avatar berhasil dihapus!');
+    }
+
     public function updateCover(Request $request)
     {
         /** @var User $user */
