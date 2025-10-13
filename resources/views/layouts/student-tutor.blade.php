@@ -74,6 +74,14 @@
                                 </svg>
                                 Certificates
                             </a>
+
+                            <a href="{{ route('student.payment.history') }}" 
+                               class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('student.payment.history') || request()->routeIs('student.payment.details') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300' }} border-b-2 border-transparent">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                </svg>
+                                Payment History
+                            </a>
                         </div>
                     </div>
 
@@ -211,6 +219,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                                 </svg>
                                 Certificates
+                            </div>
+                        </a>
+
+                        <a href="{{ route('student.payment.history') }}" 
+                           class="block pl-3 pr-4 py-2 text-base font-medium {{ request()->routeIs('student.payment.history') || request()->routeIs('student.payment.details') ? 'text-blue-600 bg-blue-50 border-blue-500' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50' }} border-l-4 border-transparent">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                </svg>
+                                Payment History
                             </div>
                         </a>
                     </div>

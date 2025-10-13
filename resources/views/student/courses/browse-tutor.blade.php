@@ -27,9 +27,16 @@
                 <!-- Search Input -->
                 <div>
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                    <input type="text" id="search" name="search" value="{{ request('search') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                           placeholder="Search courses...">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" id="search" name="search" value="{{ request('search') }}"
+                               class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Search courses...">
+                    </div>
                 </div>
 
                 <!-- Category Filter -->
@@ -72,29 +79,143 @@
                 </div>
             </div>
 
+            <!-- Additional Filters Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Sort Filter -->
+                <div>
+                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                    <select id="sort" name="sort"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest First</option>
+                        <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest First</option>
+                        <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Most Popular</option>
+                        <option value="price_low" {{ request('sort') === 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                        <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                        <option value="title" {{ request('sort') === 'title' ? 'selected' : '' }}>Title A-Z</option>
+                    </select>
+                </div>
+
+                <!-- Duration Filter -->
+                <div>
+                    <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                    <select id="duration" name="duration"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Any Duration</option>
+                        <option value="short" {{ request('duration') === 'short' ? 'selected' : '' }}>Short (< 2 hours)</option>
+                        <option value="medium" {{ request('duration') === 'medium' ? 'selected' : '' }}>Medium (2-10 hours)</option>
+                        <option value="long" {{ request('duration') === 'long' ? 'selected' : '' }}>Long (> 10 hours)</option>
+                    </select>
+                </div>
+
+                <!-- Rating Filter -->
+                <div>
+                    <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
+                    <select id="rating" name="rating"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Any Rating</option>
+                        <option value="4.5" {{ request('rating') === '4.5' ? 'selected' : '' }}>4.5+ Stars</option>
+                        <option value="4.0" {{ request('rating') === '4.0' ? 'selected' : '' }}>4.0+ Stars</option>
+                        <option value="3.5" {{ request('rating') === '3.5' ? 'selected' : '' }}>3.5+ Stars</option>
+                        <option value="3.0" {{ request('rating') === '3.0' ? 'selected' : '' }}>3.0+ Stars</option>
+                    </select>
+                </div>
+            </div>
+
             <!-- Filter Buttons -->
-            <div class="flex items-center space-x-3">
-                <button type="submit" 
-                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                    Apply Filters
-                </button>
-                <a href="{{ route('student.courses.browse') }}" 
-                   class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                    Clear Filters
-                </a>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                        </svg>
+                        Apply Filters
+                    </button>
+                    <a href="{{ route('student.courses.browse') }}" 
+                       class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Clear Filters
+                    </a>
+                </div>
+                
+                <!-- Results Count -->
+                <div class="text-sm text-gray-500">
+                    @if(isset($courses) && is_object($courses) && $courses->count() > 0)
+                        Showing {{ $courses->firstItem() ?? 0 }}-{{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }} courses
+                    @else
+                        No courses found
+                    @endif
+                </div>
             </div>
         </form>
     </div>
 
+    <!-- Featured Courses Section -->
+    @if(!request()->hasAny(['search', 'category', 'level', 'price', 'sort', 'duration', 'rating']))
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @php
+                    $featuredCourses = isset($courses) && is_object($courses) ? $courses->take(4) : collect();
+                @endphp
+                @foreach($featuredCourses as $course)
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+                        <!-- Course Thumbnail -->
+                        <div class="relative">
+                            @if($course->thumbnail)
+                                <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" class="w-full h-32 object-cover">
+                            @else
+                                <div class="w-full h-32 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                            @endif
+                            <div class="absolute top-2 right-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    Featured
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Course Content -->
+                        <div class="p-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-1 line-clamp-2">{{ $course->title }}</h3>
+                            <p class="text-xs text-gray-600 mb-2">by {{ $course->instructor->name }}</p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm">
+                                    @if($course->price > 0)
+                                        <span class="font-bold text-gray-900">Rp {{ number_format($course->price, 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="font-bold text-green-600">Free</span>
+                                    @endif
+                                </div>
+                                <a href="{{ route('student.courses.show', $course) }}" 
+                                   class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                    View →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Courses Grid -->
-    @if($courses->count() > 0)
+    @if(isset($courses) && is_object($courses) && $courses->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($courses as $course)
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 group">
                     <!-- Course Thumbnail -->
-                    <div class="aspect-w-16 aspect-h-9">
+                    <div class="relative">
                         @if($course->thumbnail)
-                            <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" class="w-full h-48 object-cover">
+                            <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                         @else
                             <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                                 <svg class="w-16 h-16 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,14 +223,38 @@
                                 </svg>
                             </div>
                         @endif
+                        
+                        <!-- Course Level Badge -->
+                        @if($course->courseLevel)
+                            <div class="absolute top-3 left-3">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-90 text-gray-800">
+                                    {{ $course->courseLevel->name }}
+                                </span>
+                            </div>
+                        @endif
+
+                        <!-- Price Badge -->
+                        <div class="absolute top-3 right-3">
+                            @if($course->price > 0)
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-white">
+                                    Rp {{ number_format($course->price, 0, ',', '.') }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white">
+                                    Free
+                                </span>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Course Content -->
                     <div class="p-6">
                         <!-- Course Info -->
                         <div class="mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $course->title }}</h3>
-                            <p class="text-sm text-gray-600 mb-2">by {{ $course->instructor->name }}</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">{{ $course->title }}</h3>
+                            <p class="text-sm text-gray-600 mb-3">by {{ $course->instructor->name }}</p>
+                            
+                            <!-- Course Stats -->
                             <div class="flex items-center space-x-4 text-sm text-gray-500 mb-3">
                                 <span class="flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,39 +275,26 @@
                                     {{ $course->enrollments_count }} students
                                 </span>
                             </div>
+
+                            <!-- Course Description -->
+                            @if($course->description)
+                                <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ Str::limit($course->description, 100) }}</p>
+                            @endif
                         </div>
 
-                        <!-- Course Level -->
-                        @if($course->courseLevel)
-                            <div class="mb-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ $course->courseLevel->name }}
-                                </span>
-                            </div>
-                        @endif
-
-                        <!-- Price and Action -->
+                        <!-- Action Buttons -->
                         <div class="flex items-center justify-between">
-                            <div>
-                                @if($course->price > 0)
-                                    <span class="text-2xl font-bold text-gray-900">Rp {{ number_format($course->price, 0, ',', '.') }}</span>
-                                @else
-                                    <span class="text-2xl font-bold text-green-600">Free</span>
-                                @endif
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <a href="{{ route('student.courses.show', $course) }}" 
-                                   class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors">
-                                    View Details
-                                </a>
-                                <form method="POST" action="{{ route('student.courses.enroll', $course) }}" class="inline">
-                                    @csrf
-                                    <button type="submit" 
-                                            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                                        Enroll Now
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="{{ route('student.courses.show', $course) }}" 
+                               class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors">
+                                View Details
+                            </a>
+                            <form method="POST" action="{{ route('student.courses.enroll', $course) }}" class="inline">
+                                @csrf
+                                <button type="submit" 
+                                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                    Enroll Now
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

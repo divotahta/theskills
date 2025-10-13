@@ -14,6 +14,12 @@ class Payment extends Model
         'transaction_id'
     ];
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -22,5 +28,11 @@ class Payment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function enrollment()
+    {
+        return $this->hasOne(Enrollment::class, 'user_id', 'user_id')
+                    ->where('course_id', $this->course_id);
     }
 } 

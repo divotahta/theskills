@@ -5,205 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'TheSkills') }} - Admin</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?inter:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Styles -->
+    @stack('styles')
 </head>
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        <div x-data="{ sidebarOpen: false }" class="flex h-screen overflow-hidden">
-            <!-- Sidebar -->
-            @php
-                $adminMenu = [
-                    [
-                        'label' => 'Dashboard',
-                        'route' => 'admin.dashboard',
-                        'active' => 'admin.dashboard',
-                        'icon' => 'dashboard',
-                    ],
-                    [
-                        'label' => 'Courses',
-                        'route' => 'admin.courses.index',
-                        'active' => 'admin.courses.*',
-                        'icon' => 'courses',
-                    ],
-                    [
-                        'label' => 'Create Course',
-                        'route' => 'admin.courses.create',
-                        'active' => 'admin.courses.create',
-                        'icon' => 'create',
-                    ],
-                    [
-                        'label' => 'Categories',
-                        'route' => 'admin.categories.index',
-                        'active' => 'admin.categories.*',
-                        'icon' => 'categories',
-                    ],
-                    [
-                        'label' => 'Users',
-                        'route' => 'admin.users.index',
-                        'active' => 'admin.users.*',
-                        'icon' => 'users',
-                    ],
-                    [
-                        'label' => 'Reports',
-                        'route' => 'admin.reports.index',
-                        'active' => 'admin.reports.*',
-                        'icon' => 'reports',
-                    ],
-                ];
-                // Hanya tampilkan item yang routenya terdaftar
-                $adminMenu = array_values(array_filter($adminMenu, function($item) {
-                    return \Illuminate\Support\Facades\Route::has($item['route']);
-                }));
-            @endphp
-            <div x-show="sidebarOpen" class="fixed inset-0 z-40 flex lg:hidden" role="dialog" aria-modal="true">
-                <div x-show="sidebarOpen" class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
-
-                <div class="relative flex flex-col w-full max-w-xs pb-4 bg-white">
-                    <div class="absolute top-0 right-0 p-2 -mr-12">
-                        <button @click="sidebarOpen = false" class="flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                            <span class="sr-only">Close sidebar</span>
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Mobile Sidebar Content -->
-                    <div class="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                        <div class="flex items-center flex-shrink-0 px-4">
-                            <img class="w-auto h-8" src="/logo.svg" alt="Logo">
-                        </div>
-                        <nav class="px-2 mt-5 space-y-1">
-                            @foreach ($adminMenu as $item)
-                                @php
-                                    $isActive = request()->routeIs($item['active']);
-                                @endphp
-                                <a href="{{ route($item['route']) }}" class="flex items-center px-2 py-2 text-base font-medium rounded-md {{ $isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                                    @switch($item['icon'])
-                                        @case('dashboard')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                                            @break
-                                        @case('courses')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l9-5-9-5-9 5 9 5z" /></svg>
-                                            @break
-                                        @case('create')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                            @break
-                                        @case('contents')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                            @break
-                                        @case('categories')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-                                            @break
-                                        @case('users')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0-4a4 4 0 100-8 4 4 0 000 8zm8 0a4 4 0 100-8 4 4 0 000 8z" /></svg>
-                                            @break
-                                        @case('reports')
-                                            <svg class="w-6 h-6 mr-4 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 00-2-2H5v10h4zm6 0V7h-4v10h4zm2 0h2V5h-2v12z" /></svg>
-                                            @break
-                                    @endswitch
-                                    {{ $item['label'] }}
-                                </a>
-                            @endforeach
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Static sidebar for desktop -->
-            <div class="hidden lg:flex lg:flex-shrink-0">
-                <div class="flex flex-col w-64">
-                    <div class="flex flex-col flex-1 min-h-0 bg-white border-r border-gray-200">
-                        <div class="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
-                            <div class="flex items-center flex-shrink-0 px-4">
-                                <img class="w-auto h-8" src="/logo.svg" alt="Logo">
+<body class="font-sans antialiased bg-gray-50" x-data="{ mobileMenuOpen: false }">
+    <div class="min-h-screen bg-gray-50">
+        <!-- Top Navigation -->
+        <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.482 0l5.58-2.392a1 1 0 00-.818-1.838l-5.58 2.392a1 1 0 01-.828 0L7 8.5V5.562a8.969 8.969 0 00-1.05.174 1 1 0 01-.89.89 11.115 11.115 0 00.25 3.762l-1.66.712a1 1 0 00-.818 1.838l7 3a1 1 0 00.787 0l7-3a1 1 0 00-.818-1.838l-1.66-.712a11.115 11.115 0 00.25-3.762 1 1 0 01-.89-.89 8.968 8.968 0 00-1.05-.174V8.5l-1.818-.78a3 3 0 00-2.482 0L9.3 16.573z"/>
+                                </svg>
                             </div>
-                            <nav class="flex-1 px-2 mt-5 space-y-1 bg-white">
-                                @foreach ($adminMenu as $item)
-                                    @php
-                                        $isActive = request()->routeIs($item['active']);
-                                    @endphp
-                                    <a href="{{ route($item['route']) }}" class="flex items-center px-2 py-2 text-sm font-medium rounded-md {{ $isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                                        @switch($item['icon'])
-                                            @case('dashboard')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                                                @break
-                                            @case('courses')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l9-5-9-5-9 5 9 5z" /></svg>
-                                                @break
-                                            @case('create')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                                @break
-                                            @case('contents')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                                @break
-                                            @case('categories')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-                                                @break
-                                            @case('users')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0-4a4 4 0 100-8 4 4 0 000 8zm8 0a4 4 0 100-8 4 4 0 000 8z" /></svg>
-                                                @break
-                                            @case('reports')
-                                                <svg class="w-6 h-6 mr-3 {{ $isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 00-2-2H5v10h4zm6 0V7h-4v10h4zm2 0h2V5h-2v12z" /></svg>
-                                                @break
-                                        @endswitch
-                                        {{ $item['label'] }}
-                                    </a>
-                                @endforeach
-                            </nav>
+                            <span class="text-xl font-bold text-gray-900">TheSkills Admin</span>
+                        </a>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('admin.courses.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.courses.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Courses
+                        </a>
+                        <a href="{{ route('admin.categories.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.categories.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Categories
+                        </a>
+                        <a href="{{ route('admin.course-levels.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.course-levels.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Course Levels
+                        </a>
+                        <a href="{{ route('admin.topics.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.topics.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Topics
+                        </a>
+                        <a href="{{ route('admin.users.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.students.*') || request()->routeIs('admin.instructors.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Users
+                        </a>
+                        <a href="{{ route('admin.profile.show') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Profile
+                        </a>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.5 19.5a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 6v12a1.5 1.5 0 01-1.5 1.5h-15z"/>
+                            </svg>
+                            <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                        </button>
+
+                        <!-- User Dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" 
+                                    class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
+                                @if(Auth::user()->avatar)
+                                    <img class="h-8 w-8 rounded-full object-cover" src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}">
+                                @else
+                                    <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                                        <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                    </div>
+                                @endif
+                                <span class="ml-2 hidden md:block">{{ Auth::user()->name }}</span>
+                                <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+
+                            <div x-show="open" @click.away="open = false" x-transition
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                                <a href="{{ route('admin.profile.show') }}" 
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Profile
+                                </a>
+                                <a href="{{ route('admin.profile.edit') }}" 
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Settings
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Log Out
+                                    </button>
+                                </form>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                                class="p-2 text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div x-show="mobileMenuOpen" x-transition class="md:hidden border-t border-gray-200 py-4">
+                    <div class="space-y-2">
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('admin.courses.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.courses.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Courses
+                        </a>
+                        <a href="{{ route('admin.categories.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.categories.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Categories
+                        </a>
+                        <a href="{{ route('admin.course-levels.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.course-levels.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Course Levels
+                        </a>
+                        <a href="{{ route('admin.topics.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.topics.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Topics
+                        </a>
+                        <a href="{{ route('admin.users.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.students.*') || request()->routeIs('admin.instructors.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Users
+                        </a>
+                        <a href="{{ route('admin.profile.show') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Profile
+                        </a>
                     </div>
                 </div>
             </div>
+        </nav>
 
-            <!-- Main content -->
-            <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
-                <!-- Top nav -->
-                <div class="flex-shrink-0 border-b border-gray-200">
-                    <header class="flex items-center justify-between px-4 py-4 bg-white sm:px-6 lg:px-8">
-                        <button @click="sidebarOpen = true" class="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden">
-                            <span class="sr-only">Open sidebar</span>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-
-                        <div class="flex items-center">
-                            <h1 class="text-2xl font-semibold text-gray-900">@yield('header')</h1>
-                        </div>
-
-                        <div class="flex items-center">
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button class="flex items-center text-sm font-medium text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
-                                        <div>{{ Auth::user()->name }}</div>
-                                        <div class="ml-1">
-                                            <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                    </button>
-                                </x-slot>
-
-                               
-                            </x-dropdown>
-                        </div>
-                    </header>
-                </div>
-
-                <main class="flex-1 overflow-y-auto focus:outline-none">
-                    {{ $slot }}
-                </main>
-            </div>
-        </div>
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            @yield('content')
+        </main>
     </div>
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
-</html> 
+</html>

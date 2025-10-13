@@ -30,6 +30,14 @@ class CourseContent extends Model
         return $this->belongsTo(Course::class);
     }
 
+    /**
+     * Resolve route model binding
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)->first();
+    }
+
     public function topic()
     {
         return $this->belongsTo(Topic::class);

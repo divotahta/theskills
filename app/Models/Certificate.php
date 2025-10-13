@@ -11,21 +11,28 @@ class Certificate extends Model
 
     protected $fillable = [
         'user_id',
-        'title',
-        'description',
-        'issue_date',
-        'expiry_date',
-        'credential_id',
-        'credential_url'
+        'course_id',
+        'certificate_number',
+        'certificate_url',
+        'issued_at',
+        'expires_at',
+        'is_valid',
+        'download_count'
     ];
 
     protected $casts = [
-        'issue_date' => 'date',
-        'expiry_date' => 'date'
+        'issued_at' => 'datetime',
+        'expires_at' => 'datetime',
+        'is_valid' => 'boolean'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
     }
 } 

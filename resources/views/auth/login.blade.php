@@ -1,11 +1,48 @@
 <x-guest-layout>
     <div class="min-h-screen flex">
         <!-- Left Side - Image -->
-        <div class="hidden lg:block lg:w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')">
-            <div class="h-full w-full bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100" height="100" fill="url(#grid)" />
+                </svg>
+            </div>
+            
+            <div class="relative h-full flex items-center justify-center">
                 <div class="text-center text-white px-8">
+                    <!-- Logo -->
+                    <div class="flex items-center justify-center mb-8">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="TheSkills Logo" 
+                             class="w-16 h-16 object-contain mr-4">
+                        <span class="text-3xl font-bold">TheSkills</span>
+                    </div>
+                    
                     <h1 class="text-4xl font-bold mb-4">Welcome Back!</h1>
-                    <p class="text-xl">Continue your learning journey with TheSkills</p>
+                    <p class="text-xl text-blue-100 mb-8">Continue your learning journey with TheSkills</p>
+                    
+                    <!-- Features -->
+                    <div class="space-y-4 text-left max-w-md">
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-yellow-400 text-xl mr-3"></i>
+                            <span>Access to 500+ courses</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-yellow-400 text-xl mr-3"></i>
+                            <span>Earn certificates</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-yellow-400 text-xl mr-3"></i>
+                            <span>Join 10K+ students</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -15,9 +52,15 @@
             <div class="w-full max-w-md">
                 <!-- Logo -->
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Student Login</h2>
+                    <div class="flex items-center justify-center mb-4">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="TheSkills Logo" 
+                             class="w-12 h-12 object-contain mr-3">
+                        <span class="text-2xl font-bold text-gray-900">TheSkills</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900">Welcome Back!</h2>
                     <p class="mt-2 text-sm text-gray-600">
-                        Access your personalized learning dashboard
+                        Sign in to access your personalized learning dashboard
                     </p>
                 </div>
 
@@ -74,7 +117,8 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
                             {{ __('Sign in') }}
                         </button>
                     </div>
@@ -89,7 +133,7 @@
                     </div>
 
                     <!-- Social Login -->
-                    <div class="mt-6">
+                    {{-- <div class="mt-6">
                         <div class="relative">
                             <div class="absolute inset-0 flex items-center">
                                 <div class="w-full border-t border-gray-300"></div>
@@ -115,7 +159,7 @@
                                 </svg>
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                 </form>
             </div>
         </div>

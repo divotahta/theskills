@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\ContentProgress;
-use App\Models\User;
+use App\Models\Enrollment;
 use App\Models\CourseContent;
 
 class ContentProgressSeeder extends Seeder
@@ -15,33 +14,38 @@ class ContentProgressSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get admin user (assuming first user is admin)
-        $admin = User::first();
-        if (!$admin) {
-            $this->command->warn('No users found. Please run UserSeeder first.');
+        $enrollments = Enrollment::with('course.contents')->get();
+        $courseContents = CourseContent::all();
+
+        if ($enrollments->isEmpty() || $courseContents->isEmpty()) {
+            $this->command->warn('Tidak ada enrollment atau course content yang ditemukan. Jalankan EnrollmentSeeder dan CourseContentSeeder terlebih dahulu.');
             return;
         }
 
-        // Get some course contents
-        $contents = CourseContent::take(5)->get();
-        if ($contents->isEmpty()) {
-            $this->command->warn('No course contents found. Please run CourseContentSeeder first.');
-            return;
-        }
-
-        // Create some sample progress data
-        foreach ($contents as $index => $content) {
-            $isCompleted = $index < 3; // Mark first 3 as completed
+        foreach ($enrollments as $enrollment) {
+            $courseContents = $enrollment->course->contents;
             
-            ContentProgress::create([
-                'user_id' => $admin->id,
-                'course_content_id' => $content->id,
-                'is_completed' => $isCompleted,
-                'completed_at' => $isCompleted ? now()->subDays(rand(1, 7)) : null,
-                'time_spent' => rand(60, 1800), // 1-30 minutes in seconds
-            ]);
+            foreach ($courseContents as $content) {
+                // Random progress (0-100%)
+                $progress = rand(0, 100);
+                
+                // Random completion status
+                $isCompleted = $progress === 100;
+                $completedAt = $isCompleted ? now()->subDays(rand(0, 10)) : null;
+                
+                // Random last accessed
+                $lastAccessedAt = $isCompleted ? $completedAt : now()->subDays(rand(0, 3));
+
+                ContentProgress::create([
+                    'user_id' => $enrollment->user_id,
+                    'course_content_id' => $content->id,
+                    'is_completed' => $isCompleted,
+                    'completed_at' => $completedAt,
+                    'time_spent' => rand(0, 3600), // Random time spent in seconds
+                ]);
+            }
         }
 
-        $this->command->info('ContentProgressSeeder completed successfully!');
+        $this->command->info('ContentProgressSeeder berhasil dijalankan!');
     }
 }

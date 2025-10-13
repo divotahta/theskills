@@ -19,15 +19,6 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create instructor
-        User::create([
-            'name' => 'Instructor',
-            'email' => 'instructor@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'instructor',
-            'email_verified_at' => now(),
-        ]);
-
         // Create student
         User::create([
             'name' => 'Student',
@@ -38,11 +29,41 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            // ChildFriendlyCategorySeeder::class,
-            // ChildFriendlyCourseSeeder::class,
-            // TopicSeeder::class,
-            // CourseContentSeeder::class,
-            // EnrollmentSeeder::class,
+            // 1. CategorySeeder - Kategori kursus
+            CategorySeeder::class,
+            
+            // 2. CourseLevelSeeder - Level kursus
+            CourseLevelSeeder::class,
+            
+            // 3. UserSeeder - Users (admin, students, instructors)
+            UserSeeder::class,
+            
+            // 4. CourseSeeder - Kursus
+            CourseSeeder::class,
+            
+            // 5. TopicSeeder - Topik untuk setiap kursus
+            TopicSeeder::class,
+            
+            // 6. CourseContentSeeder - Konten untuk setiap topik
+            CourseContentSeeder::class,
+            
+            // 7. EnrollmentSeeder - Enrollments
+            EnrollmentSeeder::class,
+            
+            // 8. ContentProgressSeeder - Progress konten
+            ContentProgressSeeder::class,
+            
+            // 9. ReviewSeeder - Reviews
+            ReviewSeeder::class,
+            
+            // 10. PaymentSeeder - Payments
+            PaymentSeeder::class,
+            
+            // 11. CertificateSeeder - Certificates
+            CertificateSeeder::class,
+            
+            // 12. PaymentTestSeeder - Test payment data
+            PaymentTestSeeder::class,
         ]);
     }
 } 

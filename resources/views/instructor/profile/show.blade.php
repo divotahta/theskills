@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.instructor-tutor')
+
+@section('content')
     <!-- Header Banner dengan Background -->
     <div class="relative h-64 bg-gradient-to-r from-purple-600 to-blue-600 overflow-hidden">
         <!-- Pattern Background -->
@@ -10,8 +12,8 @@
         </div>
 
         <!-- Cover Photo -->
-        @if($instructor->cover_photo)
-            <img src="{{ Storage::url($instructor->cover_photo) }}" 
+        @if($user->cover_photo)
+            <img src="{{ asset('storage/' . $user->cover_photo) }}" 
                  class="absolute inset-0 w-full h-full object-cover"
                  alt="Cover Photo">
         @endif
@@ -37,13 +39,13 @@
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
                     <!-- Profile Image -->
                     <div class="relative">
-                        @if($instructor->profile_photo)
-                            <img src="{{ Storage::url($instructor->profile_photo) }}" 
+                        @if($user->avatar)
+                            <img src="{{ asset('storage/' . $user->avatar) }}" 
                                  class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
-                                 alt="{{ $instructor->name }}">
+                                 alt="{{ $user->name }}">
                         @else
                             <div class="w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 border-4 border-white shadow-lg flex items-center justify-center">
-                                <span class="text-white font-bold text-2xl">{{ substr($instructor->name, 0, 1) }}</span>
+                                <span class="text-white font-bold text-2xl">{{ substr($user->name, 0, 1) }}</span>
                             </div>
                         @endif
                         
@@ -60,21 +62,21 @@
 
                     <!-- Profile Info -->
                     <div class="flex-1 text-center md:text-left">
-                        <h1 class="text-2xl font-bold text-gray-900">{{ $instructor->name }}</h1>
-                        <p class="text-gray-600">{{ $instructor->email }}</p>
+                        <h1 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h1>
+                        <p class="text-gray-600">{{ $user->email }}</p>
                         
                         <!-- Stats -->
                         <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-6">
                             <div>
-                                <p class="text-2xl font-bold text-gray-900">{{ $instructor->courses_count }}</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $user->courses()->count() }}</p>
                                 <p class="text-sm text-gray-500">Kursus</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-bold text-gray-900">{{ $instructor->students_count }}</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $user->students_count ?? 0 }}</p>
                                 <p class="text-sm text-gray-500">Siswa</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-bold text-gray-900">{{ $instructor->reviews_count ?? 0 }}</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $user->reviews_count ?? 0 }}</p>
                                 <p class="text-sm text-gray-500">Ulasan</p>
                             </div>
                         </div>
@@ -84,14 +86,14 @@
                 <!-- Bio -->
                 <div class="mt-8">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Tentang Saya</h3>
-                    <p class="text-gray-600">{{ $instructor->bio ?? 'Bio data is empty' }}</p>
+                    <p class="text-gray-600">{{ $user->bio ?? 'Bio data is empty' }}</p>
                 </div>
 
                 <!-- Courses -->
                 <div class="mt-8">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Kursus</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @forelse($instructor->courses as $course)
+                        @forelse($user->courses as $course)
                             <div class="bg-white border rounded-lg overflow-hidden">
                                 <!-- Course Thumbnail -->
                                 <div class="aspect-video bg-gray-100">
@@ -172,4 +174,4 @@
             }
         });
     </script>
-</x-app-layout> 
+@endsection 

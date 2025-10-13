@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Category;
-use App\Models\Enrollment;
+use App\Models\Enrollment;  
 use App\Models\ContentProgress;
 use App\Models\CourseLevel;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,7 @@ class CourseController extends Controller
     {
         $user = Auth::user();
         
-        $query = $user->enrollments()->with(['course.instructor', 'course.category', 'course.courseLevel', 'course.topics', 'course.contents']);
+        $query = (Enrollment::where('user_id', $user->id))->with(['course.instructor', 'course.category', 'course.courseLevel', 'course.topics', 'course.contents']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -55,14 +56,20 @@ class CourseController extends Controller
      */
     public function browse(Request $request)
     {
+
         $query = Course::with(['instructor', 'category', 'courseLevel'])
             ->withCount(['enrollments', 'contents', 'topics'])
             ->where('is_public', true);
 
         // Search filter
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('instructor', function($instructorQuery) use ($request) {
+                      $instructorQuery->where('name', 'like', '%' . $request->search . '%');
+                  });
+            });
         }
 
         // Category filter
@@ -84,7 +91,48 @@ class CourseController extends Controller
             }
         }
 
-        $courses = $query->latest()->paginate(12);
+        // Duration filter (based on content count as proxy)
+        if ($request->filled('duration')) {
+            if ($request->duration === 'short') {
+                $query->having('contents_count', '<', 10);
+            } elseif ($request->duration === 'medium') {
+                $query->having('contents_count', '>=', 10)->having('contents_count', '<=', 50);
+            } elseif ($request->duration === 'long') {
+                $query->having('contents_count', '>', 50);
+            }
+        }
+
+        // Rating filter (placeholder - would need reviews table)
+        if ($request->filled('rating')) {
+            // This would need a reviews/ratings table
+            // For now, we'll skip this filter
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'newest');
+        switch ($sort) {
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'popular':
+                $query->orderBy('enrollments_count', 'desc');
+                break;
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'newest':
+            default:
+                $query->latest();
+                break;
+        }
+
+        $courses = $query->paginate(12);
         $categories = Category::all();
         $courseLevels = CourseLevel::all();
 
@@ -96,7 +144,7 @@ class CourseController extends Controller
      */
     public function myCourses()
     {
-        $enrolledCourses = Auth::user()->enrollments()
+        $enrolledCourses = Enrollment::where('user_id', Auth::user()->id)
             ->with(['course.instructor', 'course.category'])
             ->get();
 
@@ -133,13 +181,28 @@ class CourseController extends Controller
         ])->loadCount(['enrollments', 'contents', 'topics']);
 
         // Check if user is enrolled
-        $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
+        $enrollment = Enrollment::where('user_id', Auth::user()->id)->where('course_id', $course->id)->first();
         $isEnrolled = $enrollment !== null;
+        
+        // Check payment status if course is not free
+        $paymentStatus = null;
+        $canAccess = false;
+        
+        if ($course->price > 0) {
+            $payment = Payment::where('user_id', Auth::user()->id)
+                             ->where('course_id', $course->id)
+                             ->where('status', 'completed')
+                             ->first();
+            $paymentStatus = $payment ? 'completed' : 'pending';
+            $canAccess = $payment !== null;
+        } else {
+            $canAccess = $isEnrolled;
+        }
         
         // Get user progress using ContentProgress
         $progress = $course->getUserProgress(Auth::id());
 
-        return view('student.courses.show-tutor', compact('course', 'isEnrolled', 'progress'));
+        return view('student.courses.show-tutor', compact('course', 'isEnrolled', 'progress', 'paymentStatus', 'canAccess'));
     }
 
     /**
@@ -148,11 +211,24 @@ class CourseController extends Controller
     public function learn(Course $course)
     {
         // Check if user is enrolled
-        $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
+        $enrollment = Enrollment::where('user_id', Auth::user()->id)->where('course_id', $course->id)->first();
         
         if (!$enrollment) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', 'You are not enrolled in this course.');
+                ->with('error', 'Anda belum terdaftar di kursus ini.');
+        }
+
+        // Check payment status for paid courses
+        if ($course->price > 0) {
+            $payment = Payment::where('user_id', Auth::user()->id)
+                             ->where('course_id', $course->id)
+                             ->where('status', 'completed')
+                             ->first();
+            
+            if (!$payment) {
+                return redirect()->route('student.payment.show', $course)
+                    ->with('error', 'Anda harus menyelesaikan pembayaran terlebih dahulu untuk mengakses kursus ini.');
+            }
         }
 
         $course->load([
@@ -181,7 +257,7 @@ class CourseController extends Controller
     public function enroll(Request $request, Course $course)
     {
         // Check if user is already enrolled
-        $existingEnrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
+        $existingEnrollment = Enrollment::where('user_id', Auth::user()->id)->where('course_id', $course->id)->first();
         
         if ($existingEnrollment) {
             return redirect()->route('student.courses.learn', $course)
@@ -200,16 +276,24 @@ class CourseController extends Controller
                 ->with('error', 'Kursus ini sudah penuh.');
         }
 
-        // Create enrollment
-        Auth::user()->enrollments()->create([
-            'course_id' => $course->id,
-            'enrolled_at' => now(),
-            'progress' => 0,
-            'learning_hours' => 0,
-        ]);
+        // If course is free, enroll directly
+        if ($course->price == 0) {
+            Enrollment::create([
+                'user_id' => Auth::user()->id,
+                'course_id' => $course->id,
+                'enrolled_at' => now(),
+                'progress' => 0,
+                'learning_hours' => 0,
+                'price' => 0,
+                'status' => 'active',
+            ]);
 
-        return redirect()->route('student.courses.learn', $course)
-            ->with('success', 'Berhasil mendaftar di kursus! Selamat belajar!');
+            return redirect()->route('student.courses.learn', $course)
+                ->with('success', 'Berhasil mendaftar di kursus gratis! Selamat belajar!');
+        }
+
+        // For paid courses, redirect to payment
+        return redirect()->route('student.payment.show', $course);
     }
 
     /**
@@ -217,7 +301,7 @@ class CourseController extends Controller
      */
     public function updateProgress(Request $request, Course $course)
     {
-        $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
+        $enrollment = Enrollment::where('user_id', Auth::user()->id)->where('course_id', $course->id)->first();
         
         if (!$enrollment) {
             return response()->json(['error' => 'Not enrolled'], 404);

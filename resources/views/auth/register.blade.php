@@ -1,11 +1,48 @@
 <x-guest-layout>
     <div class="min-h-screen flex">
         <!-- Left Side - Image -->
-        <div class="hidden lg:block lg:w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80')">
-            <div class="h-full w-full bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100" height="100" fill="url(#grid)" />
+                </svg>
+            </div>
+            
+            <div class="relative h-full flex items-center justify-center">
                 <div class="text-center text-white px-8">
+                    <!-- Logo -->
+                    <div class="flex items-center justify-center mb-8">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="TheSkills Logo" 
+                             class="w-16 h-16 object-contain mr-4">
+                        <span class="text-3xl font-bold">TheSkills</span>
+                    </div>
+                    
                     <h1 class="text-4xl font-bold mb-4">Start Your Learning Journey</h1>
-                    <p class="text-xl">Join thousands of students learning on TheSkills</p>
+                    <p class="text-xl text-blue-100 mb-8">Join thousands of students learning on TheSkills</p>
+                    
+                    <!-- Features -->
+                    <div class="space-y-4 text-left max-w-md">
+                        <div class="flex items-center">
+                            <i class="fas fa-rocket text-yellow-400 text-xl mr-3"></i>
+                            <span>Start learning immediately</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-chalkboard-teacher text-yellow-400 text-xl mr-3"></i>
+                            <span>Learn from expert instructors</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-trophy text-yellow-400 text-xl mr-3"></i>
+                            <span>Earn certificates & badges</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -15,9 +52,15 @@
             <div class="w-full max-w-md">
                 <!-- Logo -->
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Create Student Account</h2>
+                    <div class="flex items-center justify-center mb-4">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="TheSkills Logo" 
+                             class="w-12 h-12 object-contain mr-3">
+                        <span class="text-2xl font-bold text-gray-900">TheSkills</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900">Create Your Account</h2>
                     <p class="mt-2 text-sm text-gray-600">
-                        Join our community of learners
+                        Join our community of learners and start your journey
                     </p>
                 </div>
 
@@ -98,7 +141,8 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200">
+                            <i class="fas fa-user-plus mr-2"></i>
                             {{ __('Create Account') }}
                         </button>
                     </div>

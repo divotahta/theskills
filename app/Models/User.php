@@ -39,6 +39,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'date_of_birth' => 'date',
     ];
 
     public function courses()
@@ -68,6 +71,11 @@ class User extends Authenticatable
     public function contentProgress()
     {
         return $this->hasMany(ContentProgress::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
     }
 
     public function getStudentsCountAttribute()

@@ -6,103 +6,138 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
-
 {
-
-    //show profile
-    public function show(User $instructor)
+    public function show()
     {
-        $instructor->load(['courses' => function($query) {
-            $query->withCount('enrollments')
-                 ->withAvg('reviews', 'rating');
-        }]);
-
-        // Gunakan accessor untuk menghitung jumlah students
-        $studentsCount = $instructor->students_count;
-        
-        return view('instructor.profile.show', compact('instructor', 'studentsCount'));
+        $user = Auth::user();
+        return view('instructor.profile.show', compact('user'));
     }
 
-    /**
-     * Show the instructor profile edit form.
-     */
     public function edit()
     {
-        return view('instructor.profile.edit', [
-            'user' => Auth::user()
-        ]);
+        $user = Auth::user();
+        return view('instructor.profile.edit', compact('user'));
     }
 
-    /**
-     * Update the instructor's profile.
-     */
     public function update(Request $request)
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'skill' => ['nullable', 'string', 'max:255'],
-            'bio' => ['nullable', 'string'],
-            'display_name' => ['required', 'string', 'max:255'],
-            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'cover_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date|before:today',
+            'gender' => 'nullable|in:male,female,other',
+            'address' => 'nullable|string|max:500',
+            'bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'current_password' => 'nullable|required_with:password',
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
-        $user = Auth::user();
-        $data = $request->only(['first_name', 'last_name', 'phone', 'skill', 'bio', 'display_name']);
+        $data = $request->only([
+            'name', 'email', 'phone', 'date_of_birth', 'gender', 'address', 'bio'
+        ]);
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            $avatar = $request->file('avatar');
+            $avatarName = 'avatar-' . $user->id . '-' . time() . '.' . $avatar->getClientOriginalExtension();
+            $avatarPath = $avatar->storeAs('avatars', $avatarName, 'public');
+            $data['avatar'] = $avatarPath;
+        }
+
+        // Handle password change
+        if ($request->filled('password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+            }
+            $data['password'] = Hash::make($request->password);
+        }
 
         try {
-            // Handle profile photo
-            if ($request->hasFile('profile_photo')) {
-                $file = $request->file('profile_photo');
-                if ($file->isValid()) {
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $path = $file->move(public_path('storage/profile-photos'), $fileName);
-                    if ($path) {
-                        $data['profile_photo'] = 'profile-photos/' . $fileName;
-                    }
-                }
-            }
-
-            // Handle cover photo
-            if ($request->hasFile('cover_photo')) {
-                $file = $request->file('cover_photo');
-                if ($file->isValid()) {
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $path = $file->move(public_path('storage/cover-photos'), $fileName);
-                    if ($path) {
-                        $data['cover_photo'] = 'cover-photos/' . $fileName;
-                    }
-                }
-            }
-
+            // Update user data using DB::table for better compatibility
             DB::table('users')
                 ->where('id', $user->id)
                 ->update($data);
 
-            return back()->with('status', 'Profile updated successfully!');
+            return redirect()->route('instructor.profile.show')
+                ->with('success', 'Profil berhasil diperbarui!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update profile: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Gagal memperbarui profil: ' . $e->getMessage()]);
         }
     }
 
-    /**
-     * Update cover photo via AJAX
-     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+        }
+
+        try {
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['password' => Hash::make($request->password)]);
+
+            return redirect()->route('instructor.profile.show')
+                ->with('success', 'Password berhasil diubah!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengubah password: ' . $e->getMessage()]);
+        }
+    }
+
+    public function deleteAvatar()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        try {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['avatar' => null]);
+
+            return redirect()->route('instructor.profile.show')
+                ->with('success', 'Avatar berhasil dihapus!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menghapus avatar: ' . $e->getMessage()]);
+        }
+    }
+
     public function updateCover(Request $request)
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $request->validate([
             'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
         ]);
 
         try {
-            $user = Auth::user();
-            
             // Delete old cover photo if exists
             if ($user->cover_photo && Storage::disk('public')->exists($user->cover_photo)) {
                 Storage::disk('public')->delete($user->cover_photo);
@@ -110,13 +145,15 @@ class ProfileController extends Controller
 
             // Store new cover photo
             $path = $request->file('cover_photo')->store('covers', 'public');
-            $user->cover_photo = $path;
-            $user->save();
+            
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['cover_photo' => $path]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Cover photo updated successfully!',
-                'cover_url' => Storage::disk('public')->url($path)
+                'cover_url' => asset('storage/' . $path)
             ]);
         } catch (\Exception $e) {
             return response()->json([

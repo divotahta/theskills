@@ -160,7 +160,7 @@
                         <div class="text-3xl font-bold text-green-600 mb-2">Free</div>
                     @endif
                     
-                    @if($isEnrolled)
+                    @if($isEnrolled && $canAccess)
                         <div class="mb-4">
                             <div class="flex items-center justify-center text-sm text-gray-600 mb-2">
                                 <span>Your Progress</span>
@@ -183,14 +183,36 @@
                                 Start Learning
                             @endif
                         </a>
+                    @elseif($isEnrolled && !$canAccess)
+                        <div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="text-sm font-medium text-yellow-800">Pembayaran Pending</span>
+                            </div>
+                            <p class="text-xs text-yellow-700 mt-1">Selesaikan pembayaran untuk mengakses kursus</p>
+                        </div>
+                        
+                        <a href="{{ route('student.payment.show', $course) }}" 
+                           class="w-full bg-yellow-600 text-white py-3 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium">
+                            Selesaikan Pembayaran
+                        </a>
                     @else
-                        <form method="POST" action="{{ route('student.courses.enroll', $course) }}" class="w-full">
-                            @csrf
-                            <button type="submit" 
-                                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                                Enroll Now
-                            </button>
-                        </form>
+                        @if($course->price > 0)
+                            <a href="{{ route('student.payment.show', $course) }}" 
+                               class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                Bayar & Enroll - Rp {{ number_format($course->price, 0, ',', '.') }}
+                            </a>
+                        @else
+                            <form method="POST" action="{{ route('student.courses.enroll', $course) }}" class="w-full">
+                                @csrf
+                                <button type="submit" 
+                                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                                    Enroll Gratis
+                                </button>
+                            </form>
+                        @endif
                     @endif
                 </div>
             </div>

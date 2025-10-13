@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Enrollment;
-use App\Models\User;
 use App\Models\Course;
+use App\Models\User;
 
 class EnrollmentSeeder extends Seeder
 {
@@ -15,32 +14,46 @@ class EnrollmentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get some users and courses
-        $users = User::where('role', 'student')->take(5)->get();
-        $courses = Course::take(3)->get();
+        $courses = Course::all();
+        $students = User::where('role', 'student')->get();
 
-        if ($users->count() === 0 || $courses->count() === 0) {
-            $this->command->info('No users or courses found. Please run UserSeeder and CourseSeeder first.');
+        if ($courses->isEmpty() || $students->isEmpty()) {
+            $this->command->warn('Tidak ada course atau student yang ditemukan. Jalankan CourseSeeder dan UserSeeder terlebih dahulu.');
             return;
         }
 
-        foreach ($users as $user) {
-            foreach ($courses as $course) {
-                // Create enrollment with random progress
-                $progress = rand(0, 100);
-                $learningHours = rand(1, 20);
+        // Enroll setiap student ke beberapa course
+        foreach ($students as $student) {
+            // Random 2-4 courses per student
+            $randomCourses = $courses->random(rand(2, 4));
+            
+            foreach ($randomCourses as $course) {
+                // Random enrollment date (last 30 days)
+                $enrollmentDate = now()->subDays(rand(0, 30));
                 
+                // Random progress (0-100%)
+                $progress = rand(0, 100);
+                
+                // Random completion status
+                $isCompleted = $progress === 100;
+                $completedAt = $isCompleted ? $enrollmentDate->addDays(rand(1, 20)) : null;
+                
+                // Random last accessed
+                $lastAccessedAt = $isCompleted ? $completedAt : now()->subDays(rand(0, 5));
+
                 Enrollment::create([
-                    'user_id' => $user->id,
+                    'user_id' => $student->id,
                     'course_id' => $course->id,
-                    'enrolled_at' => now()->subDays(rand(1, 30)),
+                    'enrolled_at' => $enrollmentDate,
                     'progress' => $progress,
-                    'learning_hours' => $learningHours,
-                    'completed_at' => $progress >= 100 ? now()->subDays(rand(1, 10)) : null,
+                    'completed_at' => $completedAt,
+                    'learning_hours' => rand(1, 50),
+                    'price' => $course->price,
+                    'status' => $isCompleted ? 'completed' : 'active',
                 ]);
             }
         }
 
-        $this->command->info('EnrollmentSeeder completed successfully!');
+        $this->command->info('EnrollmentSeeder berhasil dijalankan!');
     }
 }

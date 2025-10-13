@@ -16,8 +16,12 @@ class CheckRole
     public function handle(Request $request, Closure $next, string $role): Response
     {
         // Periksa apakah pengguna memiliki role yang sesuai
-        if (!$request->user() || $request->user()->role !== $role) {
-            abort(403, 'Unauthorized action.');
+        if (!$request->user()) {
+            return redirect()->route('login');
+        }
+        
+        if ($request->user()->role !== $role) {
+            abort(403, 'Unauthorized action. Required role: ' . $role . ', Current role: ' . $request->user()->role);
         }
 
         return $next($request);
