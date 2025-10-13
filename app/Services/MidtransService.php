@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use Midtrans\Config;
 use Midtrans\Snap;
-use Midtrans\Transaction;
-use Midtrans\CoreApi;
-use App\Models\Payment;
-use App\Models\Course;
 use App\Models\User;
+use Midtrans\Config;
+use Midtrans\CoreApi;
+use App\Models\Course;
+use App\Models\Payment;
+use Midtrans\Transaction;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class MidtransService
 {
@@ -84,7 +85,7 @@ class MidtransService
             $snapToken = Snap::getSnapToken($params);
             return $snapToken;
         } catch (\Exception $e) {
-            \Log::error('Midtrans payment creation failed: ' . $e->getMessage());
+            Log::error('Midtrans payment creation failed: ' . $e->getMessage());
             throw new \Exception('Failed to create payment: ' . $e->getMessage());
         }
     }
@@ -105,14 +106,14 @@ class MidtransService
         $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . config('midtrans.server_key'));
         
         if ($signatureKey !== $expectedSignature) {
-            \Log::error('Invalid Midtrans signature for order: ' . $orderId);
+            Log::error('Invalid Midtrans signature for order: ' . $orderId);
             return response('Invalid signature', 400);
         }
 
         $payment = Payment::where('transaction_id', $orderId)->first();
         
         if (!$payment) {
-            \Log::error('Payment not found for order: ' . $orderId);
+            Log::error('Payment not found for order: ' . $orderId);
             return response('Payment not found', 404);
         }
 
@@ -121,15 +122,15 @@ class MidtransService
             case '200':
                 $payment->update(['status' => 'completed']);
                 $this->createEnrollment($payment);
-                \Log::info('Payment completed for order: ' . $orderId);
+                Log::info('Payment completed for order: ' . $orderId);
                 break;
             case '201':
                 $payment->update(['status' => 'pending']);
-                \Log::info('Payment pending for order: ' . $orderId);
+                Log::info('Payment pending for order: ' . $orderId);
                 break;
             case '202':
                 $payment->update(['status' => 'failed']);
-                \Log::info('Payment failed for order: ' . $orderId);
+                Log::info('Payment failed for order: ' . $orderId);
                 break;
         }
 
@@ -156,7 +157,7 @@ class MidtransService
                 'price' => $payment->amount,
                 'status' => 'active',
             ]);
-            \Log::info('Enrollment created for user: ' . $payment->user_id . ', course: ' . $payment->course_id);
+            Log::info('Enrollment created for user: ' . $payment->user_id . ', course: ' . $payment->course_id);
         }
     }
 

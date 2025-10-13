@@ -88,7 +88,7 @@
             <!-- Hero Image -->
             <div class="relative">
                 <div class="relative z-10">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                    <img src="{{ asset('images/theskills.png') }}" 
                          alt="Students learning online" 
                          class="rounded-2xl shadow-2xl">
                             </div>
@@ -342,7 +342,7 @@
                     <i class="fas fa-map-marker-alt text-2xl text-blue-600"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Alamat</h3>
-                <p class="text-gray-600">Jakarta, Indonesia</p>
+                <p class="text-gray-600">Jember, Indonesia</p>
             </div>
         </div>
     </div>

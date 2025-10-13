@@ -222,7 +222,7 @@
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">12. Hukum yang Berlaku</h2>
                     <p class="text-gray-600 leading-relaxed">
                         Syarat-syarat ini diatur oleh dan ditafsirkan sesuai dengan hukum Republik Indonesia. 
-                        Setiap sengketa akan diselesaikan melalui pengadilan yang berwenang di Jakarta.
+                        Setiap sengketa akan diselesaikan melalui pengadilan yang berwenang di Jember.
                     </p>
                 </section>
                 
@@ -240,7 +240,9 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-gray-900 mb-2">Alamat</h3>
-                                <p class="text-gray-600">Jl. Sudirman No. 123<br>Jakarta Pusat 10270</p>
+                                <p class="text-gray-600"Ruko Pesona Regency, Jl. Slamet Riyadi RT.001/RW.015, Jember, Jawa Timur<br>
+                                    68121<br>
+                                    Indonesia
                             </div>
                         </div>
                     </div>

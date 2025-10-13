@@ -93,8 +93,8 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Alamat Kantor</h3>
                             <p class="text-gray-600">
-                                Jl. Sudirman No. 123<br>
-                                Jakarta Pusat 10270<br>
+                                Ruko Pesona Regency, Jl. Slamet Riyadi RT.001/RW.015, Jember, Jawa Timur<br>
+                                68121<br>
                                 Indonesia
                             </p>
                         </div>
@@ -239,13 +239,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Lokasi Kami</h2>
-            <p class="text-lg text-gray-600">Kunjungi kantor kami di Jakarta</p>
+            <p class="text-lg text-gray-600">Kunjungi kantor kami di Jember</p>
         </div>
         <div class="bg-gray-200 rounded-lg h-96 flex items-center justify-center">
             <div class="text-center">
                 <i class="fas fa-map-marked-alt text-6xl text-gray-400 mb-4"></i>
                 <p class="text-gray-600 text-lg">Peta Lokasi Kantor</p>
-                <p class="text-gray-500">Jl. Sudirman No. 123, Jakarta Pusat</p>
+                <p class="text-gray-500">Jl. Slamet Riyadi RT.001/RW.015, Jember, Jawa Timur</p>
             </div>
         </div>
     </div>
