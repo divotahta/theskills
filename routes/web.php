@@ -114,11 +114,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Admin Management Routes
     Route::prefix('admin')->name('admin.')->group(function () {
+        // Analytics
+        Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])
+            ->name('analytics.index');
+        Route::get('/analytics/export', [App\Http\Controllers\Admin\AnalyticsController::class, 'export'])
+            ->name('analytics.export');
+        
         // Course Management
         Route::resource('courses', App\Http\Controllers\Admin\CourseController::class);
-        Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])
+    Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])
             ->name('courses.toggle-status');
-        Route::get('/courses/{course}/learn', [App\Http\Controllers\Admin\CourseController::class, 'learn'])
+    Route::get('/courses/{course}/learn', [App\Http\Controllers\Admin\CourseController::class, 'learn'])
             ->name('courses.learn');
 
         // Course Topics Management
@@ -158,9 +164,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         });
 
         // Course Progress Management
-        Route::post('/courses/{course}/toggle-progress', [App\Http\Controllers\Admin\CourseController::class, 'toggleContentProgress'])
+    Route::post('/courses/{course}/toggle-progress', [App\Http\Controllers\Admin\CourseController::class, 'toggleContentProgress'])
             ->name('courses.toggle-progress');
-        Route::post('/courses/{course}/update-time', [App\Http\Controllers\Admin\CourseController::class, 'updateContentTime'])
+    Route::post('/courses/{course}/update-time', [App\Http\Controllers\Admin\CourseController::class, 'updateContentTime'])
             ->name('courses.update-time');
 
         // Category Management
@@ -198,7 +204,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // ============================================================================
 
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
-    // Dashboard
+        // Dashboard
     Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -216,12 +222,12 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
 
     // Course Management
     Route::resource('courses', App\Http\Controllers\Instructor\CourseController::class);
-    Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Instructor\CourseController::class, 'toggleStatus'])
-        ->name('courses.toggle-status');
-    Route::get('/courses/{course}/learn', [App\Http\Controllers\Instructor\CourseController::class, 'learn'])
-        ->name('courses.learn');
+        Route::patch('/courses/{course}/toggle-status', [App\Http\Controllers\Instructor\CourseController::class, 'toggleStatus'])
+            ->name('courses.toggle-status');
+        Route::get('/courses/{course}/learn', [App\Http\Controllers\Instructor\CourseController::class, 'learn'])
+            ->name('courses.learn');
 
-    // Course Topics Management
+        // Course Topics Management
     Route::prefix('courses/{course}')->group(function () {
         Route::get('/topics', [App\Http\Controllers\Instructor\CourseController::class, 'topics'])
             ->name('courses.topics');
@@ -237,7 +243,7 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
             ->name('courses.topics.destroy');
     });
 
-    // Course Contents Management
+        // Course Contents Management
     Route::prefix('courses/{course}')->group(function () {
         Route::get('/contents', [App\Http\Controllers\Instructor\CourseContentController::class, 'index'])
             ->name('courses.contents.index');
@@ -257,9 +263,9 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
             ->name('courses.contents.toggle-status');
     });
 
-    // Course Progress Management
-    Route::post('/courses/{course}/toggle-progress', [App\Http\Controllers\Instructor\CourseController::class, 'toggleContentProgress'])
-        ->name('courses.toggle-progress');
+        // Course Progress Management
+        Route::post('/courses/{course}/toggle-progress', [App\Http\Controllers\Instructor\CourseController::class, 'toggleContentProgress'])
+            ->name('courses.toggle-progress');
 
     // Student Management
     Route::get('/students', [App\Http\Controllers\Instructor\StudentController::class, 'index'])
@@ -271,20 +277,49 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
     Route::get('/students/export', [App\Http\Controllers\Instructor\StudentController::class, 'export'])
         ->name('students.export');
 
-    // Analytics
+        // Analytics
     Route::get('/analytics', [App\Http\Controllers\Instructor\AnalyticsController::class, 'index'])
         ->name('analytics.index');
     Route::get('/analytics/export', [App\Http\Controllers\Instructor\AnalyticsController::class, 'export'])
         ->name('analytics.export');
 
-    // Categories
+        // Categories
     Route::post('/categories', [App\Http\Controllers\Instructor\CategoryController::class, 'store'])
         ->name('categories.store');
+
+    // AJAX routes for notifications (must be before main routes to avoid conflicts)
+    Route::get('/notifications/recent', [App\Http\Controllers\Instructor\NotificationController::class, 'getRecent'])
+        ->name('notifications.recent');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\Instructor\NotificationController::class, 'getUnreadCount'])
+        ->name('notifications.unread-count');
+    
+    // Notifications (main routes)
+    Route::get('/notifications', [App\Http\Controllers\Instructor\NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::get('/notifications/{notification}', [App\Http\Controllers\Instructor\NotificationController::class, 'show'])
+        ->name('notifications.show');
+    Route::post('/notifications/{notification}/mark-read', [App\Http\Controllers\Instructor\NotificationController::class, 'markAsRead'])
+        ->name('notifications.mark-read');
+    Route::post('/notifications/{notification}/mark-unread', [App\Http\Controllers\Instructor\NotificationController::class, 'markAsUnread'])
+        ->name('notifications.mark-unread');
+    Route::post('/notifications/mark-all-read', [App\Http\Controllers\Instructor\NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [App\Http\Controllers\Instructor\NotificationController::class, 'destroy'])
+        ->name('notifications.destroy');
 });
+
 
 // ============================================================================
 // STUDENT ROUTES
 // ============================================================================
+
+// Notifications routes (moved outside main group to avoid conflicts)
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/notifications/recent', [App\Http\Controllers\Student\NotificationController::class, 'getRecent'])
+        ->name('notifications.recent');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\Student\NotificationController::class, 'getUnreadCount'])
+        ->name('notifications.unread-count');
+});
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     // Dashboard
@@ -351,8 +386,22 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::post('/certificates/generate', [App\Http\Controllers\Student\CertificateController::class, 'generate'])
         ->name('certificates.generate');
 
+    // Notifications (main routes)
+    Route::get('/notifications', [App\Http\Controllers\Student\NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::get('/notifications/{notification}', [App\Http\Controllers\Student\NotificationController::class, 'show'])
+        ->name('notifications.show');
+    Route::post('/notifications/{notification}/mark-read', [App\Http\Controllers\Student\NotificationController::class, 'markAsRead'])
+        ->name('notifications.mark-read');
+    Route::post('/notifications/{notification}/mark-unread', [App\Http\Controllers\Student\NotificationController::class, 'markAsUnread'])
+        ->name('notifications.mark-unread');
+    Route::post('/notifications/mark-all-read', [App\Http\Controllers\Student\NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.mark-all-read');
+    Route::delete('/notifications/{notification}', [App\Http\Controllers\Student\NotificationController::class, 'destroy'])
+        ->name('notifications.destroy');
+
     // Settings
-    Route::get('/settings', function () {
-        return view('student.settings-tutor');
-    })->name('settings');
-});
+        Route::get('/settings', function () {
+            return view('student.settings-tutor');
+        })->name('settings');
+    });

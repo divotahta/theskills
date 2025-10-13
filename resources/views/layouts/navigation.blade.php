@@ -5,9 +5,9 @@
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('welcome') }}" class="flex items-center space-x-2">
                     <img src="{{ asset('images/logo.png') }}" 
-                         alt="TheSkills Logo" 
+                         alt="The Skills Indonesia Logo" 
                          class="w-8 h-8 sm:w-10 sm:h-10 object-contain">
-                    <span class="text-xl sm:text-2xl font-bold text-gray-900">TheSkills</span>
+                    <span class="text-xl sm:text-2xl font-bold text-gray-900">The Skills Indonesia</span>
                     </a>
                 </div>
 
@@ -85,7 +85,7 @@
 
             <!-- Auth Buttons - Desktop -->
             <div class="hidden lg:flex lg:items-center lg:space-x-3">
-                <!-- Teach on TheSkills -->
+                <!-- Teach on The Skills Indonesia -->
                 <a href="{{ route('instructor.register') }}" class="text-sm text-gray-700 hover:text-blue-600 font-medium transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
                     <i class="fas fa-chalkboard-teacher mr-1"></i>
                     Teach
@@ -217,7 +217,7 @@
                 </a>
                 <a href="{{ route('instructor.register') }}" class="flex items-center px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                     <i class="fas fa-chalkboard-teacher mr-3 text-blue-600"></i>
-                    Teach on TheSkills
+                    Teach on The Skills Indonesia
                 </a>
                 <a href="{{ route('about') }}" class="flex items-center px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                     <i class="fas fa-info-circle mr-3 text-blue-600"></i>

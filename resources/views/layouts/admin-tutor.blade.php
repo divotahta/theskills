@@ -27,11 +27,12 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center">
-                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                            <img src="{{ asset('images/logo.png') }}" alt="TheSkills" class="h-8 w-8">
+                            {{-- <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                                 <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.482 0l5.58-2.392a1 1 0 00-.818-1.838l-5.58 2.392a1 1 0 01-.828 0L7 8.5V5.562a8.969 8.969 0 00-1.05.174 1 1 0 01-.89.89 11.115 11.115 0 00.25 3.762l-1.66.712a1 1 0 00-.818 1.838l7 3a1 1 0 00.787 0l7-3a1 1 0 00-.818-1.838l-1.66-.712a11.115 11.115 0 00.25-3.762 1 1 0 01-.89-.89 8.968 8.968 0 00-1.05-.174V8.5l-1.818-.78a3 3 0 00-2.482 0L9.3 16.573z"/>
                                 </svg>
-                            </div>
+                            </div> --}}
                             <span class="text-xl font-bold text-gray-900">TheSkills Admin</span>
                         </a>
                     </div>
@@ -45,6 +46,10 @@
                         <a href="{{ route('admin.courses.index') }}" 
                            class="text-sm font-medium {{ request()->routeIs('admin.courses.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
                             Courses
+                        </a>
+                        <a href="{{ route('admin.analytics.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.analytics.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Analytics
                         </a>
                         <a href="{{ route('admin.categories.index') }}" 
                            class="text-sm font-medium {{ request()->routeIs('admin.categories.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
@@ -71,12 +76,12 @@
                     <!-- User Menu -->
                     <div class="flex items-center space-x-4">
                         <!-- Notifications -->
-                        <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                        {{-- <button class="p-2 text-gray-400 hover:text-gray-600 relative">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.5 19.5a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 6v12a1.5 1.5 0 01-1.5 1.5h-15z"/>
                             </svg>
                             <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-                        </button>
+                        </button> --}}
 
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">
@@ -137,6 +142,10 @@
                         <a href="{{ route('admin.courses.index') }}" 
                            class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.courses.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
                             Courses
+                        </a>
+                        <a href="{{ route('admin.analytics.index') }}" 
+                           class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.analytics.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">
+                            Analytics
                         </a>
                         <a href="{{ route('admin.categories.index') }}" 
                            class="block px-3 py-2 text-sm font-medium {{ request()->routeIs('admin.categories.*') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600' }} rounded-md">

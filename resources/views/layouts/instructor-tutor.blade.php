@@ -66,18 +66,171 @@
                                 </svg>
                                 Analytics
                             </a>
+
+                            <a href="{{ route('instructor.notifications.index') }}" 
+                               class="inline-flex items-center px-1 pt-1 text-sm font-medium {{ request()->routeIs('instructor.notifications.*') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300' }} border-b-2 border-transparent">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.828 7l2.586 2.586a2 2 0 002.828 0L16 7m-5 5h.01M5 20h6a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Notifikasi
+                                @if(auth()->user()->unread_notifications_count > 0)
+                                    <span class="ml-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                                        {{ auth()->user()->unread_notifications_count > 99 ? '99+' : auth()->user()->unread_notifications_count }}
+                                    </span>
+                                @endif
+                            </a>
                         </div>
                     </div>
 
                     <!-- Right side - Notifications and Profile -->
                     <div class="flex items-center space-x-4">
                         <!-- Notifications -->
-                        <button type="button" class="p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full">
-                            <span class="sr-only">View notifications</span>
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                            </svg>
-                        </button>
+                        <div class="relative" x-data="{ 
+                                notificationsOpen: false, 
+                                unreadCount: {{ auth()->user()->unread_notifications_count ?? 0 }},
+                                init() {
+                                    // Auto-refresh unread count every 30 seconds
+                                    setInterval(() => {
+                                        this.fetchUnreadCount();
+                                    }, 30000);
+                                },
+                                fetchUnreadCount() {
+                                    fetch('/instructor/notifications/unread-count', {
+                                        method: 'GET',
+                                        headers: {
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+                                        },
+                                        credentials: 'same-origin'
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok: ' + response.status);
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        if (data && typeof data.unread_count !== 'undefined') {
+                                            this.unreadCount = data.unread_count;
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching unread count:', error);
+                                    });
+                                }
+                             }">
+                            <button @click="notificationsOpen = !notificationsOpen"
+                                    class="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full">
+                                <span class="sr-only">View notifications</span>
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                </svg>
+                                <!-- Unread count badge -->
+                                <span x-show="unreadCount > 0"
+                                      x-text="unreadCount > 99 ? '99+' : unreadCount"
+                                      class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full min-w-[20px] h-5">
+                                </span>
+                            </button>
+
+                            <!-- Notifications dropdown -->
+                            <div x-show="notificationsOpen"
+                                 @click.away="notificationsOpen = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95"
+                                 class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+
+                                <!-- Header -->
+                                <div class="px-4 py-3 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-gray-900">Notifikasi</h3>
+                                        <a href="{{ route('instructor.notifications.index') }}"
+                                           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                            Lihat Semua
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Notifications list -->
+                                <div class="max-h-96 overflow-y-auto" x-data="{
+                                    notifications: [],
+                                    loadNotifications() {
+                                        fetch('/instructor/notifications/recent', {
+                                            method: 'GET',
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+                                            },
+                                            credentials: 'same-origin'
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error('Network response was not ok: ' + response.status);
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(data => {
+                                            if (data && Array.isArray(data.notifications)) {
+                                                this.notifications = data.notifications;
+                                            } else {
+                                                this.notifications = [];
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error loading notifications:', error);
+                                            this.notifications = [];
+                                        });
+                                    }
+                                }" x-init="loadNotifications()">
+                                    <template x-for="notification in notifications" :key="notification.id">
+                                        <div class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                                             @click="window.location.href = notification.url">
+                                            <div class="flex items-start space-x-3">
+                                                <div class="flex-shrink-0">
+                                                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                                                         :class="notification.is_read ? 'bg-gray-100' : 'bg-blue-100'">
+                                                        <i :class="notification.icon + ' ' + notification.color + ' text-sm'"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900"
+                                                       :class="notification.is_read ? '' : 'font-bold'"
+                                                       x-text="notification.title"></p>
+                                                    <p class="text-sm text-gray-600 mt-1" x-text="notification.message"></p>
+                                                    <p class="text-xs text-gray-500 mt-1" x-text="notification.created_at"></p>
+                                                </div>
+                                                <div x-show="!notification.is_read" class="flex-shrink-0">
+                                                    <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- Empty state -->
+                                    <div x-show="notifications.length === 0" class="px-4 py-8 text-center">
+                                        <div class="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                            <i class="fas fa-bell-slash text-gray-400 text-xl"></i>
+                                        </div>
+                                        <p class="text-sm text-gray-600">Tidak ada notifikasi</p>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="px-4 py-3 border-t border-gray-200">
+                                    <a href="{{ route('instructor.notifications.index') }}"
+                                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                        Lihat Semua Notifikasi
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Profile dropdown -->
                         <div class="relative" x-data="{ open: false }">
@@ -209,5 +362,6 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
 </body>
 </html>
