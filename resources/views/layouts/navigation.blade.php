@@ -2,12 +2,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-            <div class="flex-shrink-0 flex items-center">
-                <a href="{{ route('welcome') }}" class="flex items-center space-x-2">
-                    <img src="{{ asset('images/logo.png') }}" 
-                         alt="The Skills Logo" 
-                         class="w-8 h-8 sm:w-10 sm:h-10 object-contain">
-                    <span class="text-xl sm:text-2xl font-bold text-gray-900">The Skills</span>
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ route('welcome') }}" class="flex items-center space-x-2">
+                        <img src="{{ asset('images/logo.png') }}" alt="TheSkills Logo"
+                            class="w-8 h-8 sm:w-10 sm:h-10 object-contain">
+                        <span class="text-xl sm:text-2xl font-bold text-gray-900">TheSkills</span>
                     </a>
                 </div>
 
