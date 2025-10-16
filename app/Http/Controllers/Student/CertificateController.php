@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;
-use App\Models\Certificate;
 use App\Models\Enrollment;
-use App\Models\ContentProgress;
+use App\Models\Certificate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\ContentProgress;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CertificateController extends Controller
 {
@@ -36,18 +37,35 @@ class CertificateController extends Controller
      */
     public function download(Certificate $certificate)
     {
-        // Check if the certificate belongs to the authenticated user
-        if ($certificate->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized access to certificate');
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return view('certificates.download-error', [
+                'certificate' => $certificate,
+                'error' => 'login_required'
+            ]);
         }
 
-        // Generate PDF
-        $pdf = Pdf::loadView('student.certificate-pdf', compact('certificate'));
-        
-        // Update download count
-        $certificate->increment('download_count');
-        
-        return $pdf->download("certificate-{$certificate->certificate_number}.pdf");
+        // Check if the certificate belongs to the authenticated user
+        if ($certificate->user_id !== Auth::id()) {
+            return view('certificates.download-error', [
+                'certificate' => $certificate,
+                'error' => 'unauthorized_access'
+            ]);
+        }
+
+        try {
+            // Generate PDF
+            $pdf = Pdf::loadView('student.certificate-pdf', compact('certificate'));
+            
+            // Update download count
+            $certificate->increment('download_count');
+            
+            return $pdf->download("certificate-{$certificate->certificate_number}.pdf");
+        } catch (\Exception $e) {
+            Log::error('Certificate PDF generation failed: ' . $e->getMessage());
+            return redirect()->back()
+                           ->with('error', 'Gagal menghasilkan PDF sertifikat. Silakan coba lagi.');
+        }
     }
 
     /**
