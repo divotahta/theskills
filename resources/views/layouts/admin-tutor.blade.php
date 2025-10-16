@@ -71,6 +71,10 @@
                            class="text-sm font-medium {{ request()->routeIs('admin.profile.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
                             Profile
                         </a>
+                        <a href="{{ route('admin.payments.index') }}" 
+                           class="text-sm font-medium {{ request()->routeIs('admin.payments.*') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600' }} transition-colors">
+                            Payments
+                        </a>
                     </div>
 
                     <!-- User Menu -->

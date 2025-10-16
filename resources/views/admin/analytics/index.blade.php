@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {{-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-yellow-100 rounded-lg">
                     <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
@@ -106,9 +106,9 @@
                     <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {{-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-purple-100 rounded-lg">
                     <i class="fas fa-star text-purple-600 text-xl"></i>
@@ -118,7 +118,7 @@
                     <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['average_rating'], 1) }}</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Additional Stats -->
@@ -167,7 +167,7 @@
     </div>
 
     <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    {{-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Revenue Chart -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
@@ -195,10 +195,10 @@
                 <canvas id="userGrowthChart" class="hidden"></canvas>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Additional Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    {{-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Course Categories Chart -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Courses by Category</h3>
@@ -226,7 +226,7 @@
                 <canvas id="enrollmentChart" class="hidden"></canvas>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Top Performers Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -242,7 +242,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-medium text-gray-900">{{ $course->enrollments_count }} enrollments</p>
-                        <p class="text-xs text-gray-600">{{ number_format($course->reviews_avg_rating, 1) }} ⭐</p>
+                        {{-- <p class="text-xs text-gray-600">{{ number_format($course->reviews_avg_rating, 1) }} ⭐</p> --}}
                     </div>
                 </div>
                 @endforeach

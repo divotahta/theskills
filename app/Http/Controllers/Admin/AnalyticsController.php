@@ -88,7 +88,6 @@ class AnalyticsController extends Controller
             'total_enrollments' => Enrollment::count(),
             'total_revenue' => Payment::where('status', 'completed')->sum('amount'),
             'total_reviews' => Review::count(),
-            'average_rating' => Review::avg('rating') ?? 0,
             'active_courses' => Course::where('is_public', true)->count(),
             'pending_courses' => Course::where('is_public', false)->count(),
         ];
@@ -346,25 +345,11 @@ class AnalyticsController extends Controller
             });
 
         // Recent reviews
-        $reviews = Review::with(['user', 'course'])
-            ->latest()
-            ->limit(5)
-            ->get()
-            ->map(function($review) {
-                return [
-                    'type' => 'review',
-                    'message' => "{$review->user->name} rated '{$review->course->title}' {$review->rating} stars",
-                    'time' => $review->created_at,
-                    'icon' => 'fas fa-star',
-                    'color' => 'text-yellow-600',
-                ];
-            });
 
         return $activities
             ->merge($enrollments)
             ->merge($courses)
             ->merge($payments)
-            ->merge($reviews)
             ->sortByDesc('time')
             ->take(20);
     }
@@ -375,8 +360,7 @@ class AnalyticsController extends Controller
     private function getTopCourses($start, $end)
     {
         return Course::with(['instructor', 'category'])
-            ->withCount(['enrollments', 'reviews'])
-            ->withAvg('reviews', 'rating')
+            ->withCount(['enrollments'])
             ->whereHas('enrollments', function($query) use ($start, $end) {
                 $query->whereBetween('created_at', [$start, $end]);
             })

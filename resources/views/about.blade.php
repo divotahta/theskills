@@ -37,7 +37,7 @@
                         <div class="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
                             <i class="fas fa-check text-white text-sm"></i>
                         </div>
-                        <p class="text-gray-600">Instruktur berpengalaman dan terverifikasi</p>
+                        <p class="text-gray-600">Pengajar berpengalaman dan terverifikasi</p>
                     </div>
                     <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
@@ -74,16 +74,16 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="text-center">
-                <div class="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">500+</div>
                 <div class="text-gray-600">Siswa Aktif</div>
             </div>
             <div class="text-center">
-                <div class="text-4xl font-bold text-blue-600 mb-2">500+</div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">5+</div>
                 <div class="text-gray-600">Kursus Tersedia</div>
             </div>
             <div class="text-center">
-                <div class="text-4xl font-bold text-blue-600 mb-2">200+</div>
-                <div class="text-gray-600">Instruktur Ahli</div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">10+</div>
+                <div class="text-gray-600">Pengajar Ahli</div>
             </div>
             <div class="text-center">
                 <div class="text-4xl font-bold text-blue-600 mb-2">98%</div>
@@ -100,13 +100,11 @@
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Tim Kami</h2>
             <p class="text-lg text-gray-600">Orang-orang hebat di balik TheSkills</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-8">
             <div class="text-center">
-                <div class="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user text-white text-4xl"></i>
-                </div>
+                <img src="{{ asset('images/profile/CEO.jpeg') }}" alt="CEO & Founder" class="w-32 h-32 rounded-full mx-auto mb-4">
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">CEO & Founder</h3>
-                <p class="text-gray-600 mb-4">Pemimpin visioner dengan pengalaman 15+ tahun di industri teknologi</p>
+                <p class="text-gray-600 mb-4">Pemimpin visioner dengan pengalaman 2+ tahun di industri teknologi</p>
                 <div class="flex justify-center space-x-4">
                     <a href="#" class="text-blue-600 hover:text-blue-800">
                         <i class="fab fa-linkedin text-xl"></i>
@@ -116,7 +114,7 @@
                     </a>
                 </div>
             </div>
-            <div class="text-center">
+            {{-- <div class="text-center">
                 <div class="w-32 h-32 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-user text-white text-4xl"></i>
                 </div>
@@ -130,8 +128,8 @@
                         <i class="fab fa-github text-xl"></i>
                     </a>
                 </div>
-            </div>
-            <div class="text-center">
+            </div> --}}
+            {{-- <div class="text-center">
                 <div class="w-32 h-32 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-user text-white text-4xl"></i>
                 </div>
@@ -145,7 +143,7 @@
                         <i class="fab fa-twitter text-xl"></i>
                     </a>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

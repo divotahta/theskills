@@ -71,12 +71,12 @@
                     <!-- User Menu -->
                     <div class="flex items-center space-x-4">
                         <!-- Notifications -->
-                        <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                        {{-- <button class="p-2 text-gray-400 hover:text-gray-600 relative">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.5 19.5a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 6v12a1.5 1.5 0 01-1.5 1.5h-15z"/>
                             </svg>
                             <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-                        </button>
+                        </button> --}}
 
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">

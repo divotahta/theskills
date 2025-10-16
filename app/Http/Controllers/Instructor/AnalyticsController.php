@@ -216,8 +216,8 @@ class AnalyticsController extends Controller
             $query->where('instructor_id', $instructor->id);
         });
 
-        $totalReviews = $baseQuery->count();
-        $averageRating = $baseQuery->avg('rating') ?? 0;
+        // $totalReviews = $baseQuery->count();
+        // $averageRating = $baseQuery->avg('rating') ?? 0;
 
         // Rating distribution
         $ratingDistribution = DB::table('reviews')
@@ -241,8 +241,8 @@ class AnalyticsController extends Controller
         ->get();
 
         return [
-            'total' => $totalReviews,
-            'average' => round($averageRating, 2),
+            // 'total' => $totalReviews,
+            // 'average' => round($averageRating, 2),
             'distribution' => $ratingDistribution,
             'recent' => $recentReviews
         ];

@@ -1,11 +1,48 @@
 <x-guest-layout>
     <div class="min-h-screen flex">
         <!-- Left Side - Image -->
-        <div class="hidden lg:block lg:w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')">
-            <div class="h-full w-full bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100" height="100" fill="url(#grid)" />
+                </svg>
+            </div>
+            
+            <div class="relative h-full flex items-center justify-center">
                 <div class="text-center text-white px-8">
+                    <!-- Logo -->
+                    <div class="flex items-center justify-center mb-8">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="TheSkills Logo" 
+                             class="w-16 h-16 object-contain mr-4">
+                        <span class="text-3xl font-bold">TheSkills</span>
+                    </div>
+                    
                     <h1 class="text-4xl font-bold mb-4">Become an Instructor</h1>
-                    <p class="text-xl">Share your knowledge with students worldwide</p>
+                    <p class="text-xl text-blue-100 mb-8">Create your instructor account to start teaching</p>
+                    
+                    <!-- Features -->
+                    <div class="space-y-4 text-left max-w-md">
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-yellow-400 text-xl mr-3"></i>
+                            <span>Access to 5+ courses</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-yellow-400 text-xl mr-3"></i>
+                            <span>Earn certificates</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-yellow-400 text-xl mr-3"></i>
+                            <span>Join 500+ students</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

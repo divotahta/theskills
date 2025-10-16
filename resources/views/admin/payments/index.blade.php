@@ -6,7 +6,7 @@
 @section('content')
 <div class="px-4 py-6 sm:px-6 lg:px-8">
     <div class="mb-6">
-        <p class="text-gray-600 mt-2">Local testing - Manual status update for payments</p>
+        <p class="text-gray-600 mt-2">Manual status update for payments</p>
     </div>
 
     @if(session('success'))

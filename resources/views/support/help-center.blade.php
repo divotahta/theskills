@@ -60,7 +60,7 @@
                 <ul class="space-y-3">
                     <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Mendaftar kursus</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Mengakses materi</a></li>
-                    <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Mengikuti quiz</a></li>
+                    {{-- <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Mengikuti quiz</a></li> --}}
                     <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Mendapatkan sertifikat</a></li>
                 </ul>
             </div>

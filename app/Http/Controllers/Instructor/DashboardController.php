@@ -32,16 +32,6 @@ class DashboardController extends Controller
             $query->where('instructor_id', $instructor->id);
         })->where('status', 'completed')->sum('amount');
 
-        // Get average rating
-        $averageRating = Review::whereHas('course', function($query) use ($instructor) {
-            $query->where('instructor_id', $instructor->id);
-        })->avg('rating') ?? 0;
-
-        // Get total reviews
-        $totalReviews = Review::whereHas('course', function($query) use ($instructor) {
-            $query->where('instructor_id', $instructor->id);
-        })->count();
-
         // Get recent enrollments
         $recentEnrollments = Enrollment::with(['user', 'course'])
             ->whereHas('course', function($query) use ($instructor) {
@@ -115,8 +105,8 @@ class DashboardController extends Controller
             'totalCourses',
             'totalStudents', 
             'totalRevenue',
-            'averageRating',
-            'totalReviews',
+            // 'averageRating',
+            // 'totalReviews',
             'recentEnrollments',
             'recentPayments',
             'monthlyRevenue',
