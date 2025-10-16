@@ -5,9 +5,9 @@
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('welcome') }}" class="flex items-center space-x-2">
                     <img src="{{ asset('images/logo.png') }}" 
-                         alt="The Skills Indonesia Logo" 
+                         alt="The Skills Logo" 
                          class="w-8 h-8 sm:w-10 sm:h-10 object-contain">
-                    <span class="text-xl sm:text-2xl font-bold text-gray-900">The Skills Indonesia</span>
+                    <span class="text-xl sm:text-2xl font-bold text-gray-900">The Skills</span>
                     </a>
                 </div>
 
