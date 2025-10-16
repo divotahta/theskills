@@ -166,7 +166,7 @@ class PaymentController extends Controller
                 $this->midtransService->createEnrollment($payment);
                 
                 // Check if user is authenticated
-                if (auth()->check()) {
+                if (Auth::check()) {
                     return redirect()->route('student.courses.learn', $payment->course)
                                    ->with('success', 'Pembayaran berhasil! Selamat belajar!');
                 } else {
@@ -176,7 +176,7 @@ class PaymentController extends Controller
                 $payment->update(['status' => 'pending']);
                 
                 // Check if user is authenticated
-                if (auth()->check()) {
+                if (Auth::check()) {
                     return redirect()->route('student.payment.show', $payment->course)
                                    ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
                 } else {
@@ -186,7 +186,7 @@ class PaymentController extends Controller
                 $payment->update(['status' => 'failed']);
                 
                 // Check if user is authenticated
-                if (auth()->check()) {
+                if (Auth::check()) {
                     return redirect()->route('student.payment.show', $payment->course)
                                    ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
                 } else {
@@ -198,7 +198,7 @@ class PaymentController extends Controller
             
             // Check if payment is completed
             if ($payment->status === 'completed') {
-                if (auth()->check()) {
+                if (Auth::check()) {
                     return redirect()->route('student.courses.learn', $payment->course)
                                    ->with('success', 'Pembayaran berhasil! Selamat belajar!');
                 } else {
@@ -207,7 +207,7 @@ class PaymentController extends Controller
             }
 
             // Check if user is authenticated
-            if (auth()->check()) {
+            if (Auth::check()) {
                 return redirect()->route('student.payment.show', $payment->course)
                                ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
             } else {
@@ -231,7 +231,7 @@ class PaymentController extends Controller
         }
 
         // Check if user is authenticated
-        if (auth()->check()) {
+        if (Auth::check()) {
             return redirect()->route('student.courses.index')
                            ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
         } else {
