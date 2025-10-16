@@ -89,10 +89,10 @@ return [
     */
     
     'callbacks' => [
-        'finish' => env('MIDTRANS_FINISH_URL', url('/student/payment/success')),
-        'unfinish' => env('MIDTRANS_UNFINISH_URL', url('/student/payment/failure')),
-        'error' => env('MIDTRANS_ERROR_URL', url('/student/payment/failure')),
-        'notification' => env('MIDTRANS_NOTIFICATION_URL', url('/payment/notification')),
+        'finish' => env('MIDTRANS_FINISH_URL', '/student/payment/success'),
+        'unfinish' => env('MIDTRANS_UNFINISH_URL', '/student/payment/failure'),
+        'error' => env('MIDTRANS_ERROR_URL', '/student/payment/failure'),
+        'notification' => env('MIDTRANS_NOTIFICATION_URL', '/payment/notification'),
     ],
     
     /*

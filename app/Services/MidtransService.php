@@ -75,9 +75,9 @@ class MidtransService
             'customer_details' => $customerDetails,
             'item_details' => $itemDetails,
             'callbacks' => [
-                'finish' => url('/student/payment/success'),
-                'unfinish' => url('/student/payment/failure'),
-                'error' => url('/student/payment/failure')
+                'finish' => config('app.url') . '/student/payment/success',
+                'unfinish' => config('app.url') . '/student/payment/failure',
+                'error' => config('app.url') . '/student/payment/failure'
             ]
         ];
 

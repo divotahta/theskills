@@ -28,11 +28,13 @@ $configs = [
     'is_3ds' => config('midtrans.is_3ds'),
 ];
 
+$allConfigsPresent = true;
 foreach ($configs as $key => $value) {
     if ($value !== null) {
         echo "   ✅ {$key}: " . (is_bool($value) ? ($value ? 'true' : 'false') : substr($value, 0, 20) . '...') . "\n";
     } else {
         echo "   ❌ {$key}: Missing\n";
+        $allConfigsPresent = false;
     }
 }
 
@@ -107,7 +109,6 @@ if (is_array($callbacks)) {
 echo "\n📋 Summary\n";
 echo "==========\n";
 
-$allConfigsPresent = !in_array(null, $configs);
 $serviceWorking = class_exists('\App\Services\MidtransService');
 
 if ($allConfigsPresent && $serviceWorking) {

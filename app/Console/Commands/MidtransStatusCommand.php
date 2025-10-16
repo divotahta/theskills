@@ -87,6 +87,9 @@ class MidtransStatusCommand extends Command
             } catch (\Exception $e) {
                 if (strpos($e->getMessage(), '404') !== false || strpos($e->getMessage(), 'not found') !== false) {
                     $this->info('✅ Connection test successful: API responding correctly');
+                } elseif (strpos($e->getMessage(), '401') !== false || strpos($e->getMessage(), 'Unknown Merchant') !== false) {
+                    $this->warn('⚠️  Connection test failed: Invalid server key or merchant ID');
+                    $this->warn('   Please check your Midtrans configuration');
                 } else {
                     $this->error('❌ Connection test failed: ' . $e->getMessage());
                 }

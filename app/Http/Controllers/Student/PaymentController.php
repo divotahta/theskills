@@ -146,14 +146,14 @@ class PaymentController extends Controller
         $transactionId = $request->get('order_id');
         
         if (!$transactionId) {
-            return redirect()->route('student.courses.index')
+            return redirect()->route('welcome')
                            ->with('error', 'Transaction ID tidak ditemukan.');
         }
 
         $payment = Payment::where('transaction_id', $transactionId)->first();
         
         if (!$payment) {
-            return redirect()->route('student.courses.index')
+            return redirect()->route('welcome')
                            ->with('error', 'Pembayaran tidak ditemukan.');
         }
 
@@ -165,30 +165,54 @@ class PaymentController extends Controller
                 $payment->update(['status' => 'completed']);
                 $this->midtransService->createEnrollment($payment);
                 
-                return redirect()->route('student.courses.learn', $payment->course)
-                               ->with('success', 'Pembayaran berhasil! Selamat belajar!');
+                // Check if user is authenticated
+                if (auth()->check()) {
+                    return redirect()->route('student.courses.learn', $payment->course)
+                                   ->with('success', 'Pembayaran berhasil! Selamat belajar!');
+                } else {
+                    return view('payments.success', ['payment' => $payment]);
+                }
             } elseif ($status['transaction_status'] === 'pending') {
                 $payment->update(['status' => 'pending']);
                 
-                return redirect()->route('student.payment.show', $payment->course)
-                               ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+                // Check if user is authenticated
+                if (auth()->check()) {
+                    return redirect()->route('student.payment.show', $payment->course)
+                                   ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+                } else {
+                    return view('payments.success', ['payment' => $payment, 'status' => 'pending']);
+                }
             } else {
                 $payment->update(['status' => 'failed']);
                 
-                return redirect()->route('student.payment.show', $payment->course)
-                               ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
+                // Check if user is authenticated
+                if (auth()->check()) {
+                    return redirect()->route('student.payment.show', $payment->course)
+                                   ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
+                } else {
+                    return view('payments.failure', ['payment' => $payment]);
+                }
             }
         } catch (\Exception $e) {
             Log::error('Payment status check failed: ' . $e->getMessage());
             
             // Check if payment is completed
             if ($payment->status === 'completed') {
-                return redirect()->route('student.courses.learn', $payment->course)
-                               ->with('success', 'Pembayaran berhasil! Selamat belajar!');
+                if (auth()->check()) {
+                    return redirect()->route('student.courses.learn', $payment->course)
+                                   ->with('success', 'Pembayaran berhasil! Selamat belajar!');
+                } else {
+                    return view('payments.success', ['payment' => $payment]);
+                }
             }
 
-            return redirect()->route('student.payment.show', $payment->course)
-                           ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+            // Check if user is authenticated
+            if (auth()->check()) {
+                return redirect()->route('student.payment.show', $payment->course)
+                               ->with('info', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+            } else {
+                return view('payments.success', ['payment' => $payment, 'status' => 'pending']);
+            }
         }
     }
 
@@ -206,8 +230,13 @@ class PaymentController extends Controller
             }
         }
 
-        return redirect()->route('student.courses.index')
-                       ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
+        // Check if user is authenticated
+        if (auth()->check()) {
+            return redirect()->route('student.courses.index')
+                           ->with('error', 'Pembayaran gagal. Silakan coba lagi.');
+        } else {
+            return view('payments.failure', ['payment' => $payment ?? null]);
+        }
     }
 
     /**

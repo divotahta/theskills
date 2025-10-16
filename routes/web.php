@@ -47,9 +47,13 @@ Route::get('/support/faq', function () {
     return view('support.faq');
 })->name('support.faq');
 
-// Payment notification (no auth required)
+// Payment callbacks (no auth required)
 Route::post('/payment/notification', [App\Http\Controllers\Student\PaymentController::class, 'notification'])
     ->name('payment.notification');
+Route::get('/student/payment/success', [App\Http\Controllers\Student\PaymentController::class, 'success'])
+    ->name('student.payment.success');
+Route::get('/student/payment/failure', [App\Http\Controllers\Student\PaymentController::class, 'failure'])
+    ->name('student.payment.failure');
 
 // ============================================================================
 // AUTHENTICATION ROUTES
@@ -359,10 +363,6 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
         ->name('payment.show');
     Route::post('/payment/{course}/create', [App\Http\Controllers\Student\PaymentController::class, 'create'])
         ->name('payment.create');
-    Route::get('/payment/success', [App\Http\Controllers\Student\PaymentController::class, 'success'])
-        ->name('payment.success');
-    Route::get('/payment/failure', [App\Http\Controllers\Student\PaymentController::class, 'failure'])
-        ->name('payment.failure');
     Route::get('/payment/{payment}/status', [App\Http\Controllers\Student\PaymentController::class, 'checkStatus'])
         ->name('payment.status');
     Route::post('/payment/{payment}/update-status', [App\Http\Controllers\Student\PaymentController::class, 'updateStatus'])

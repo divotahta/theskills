@@ -1,0 +1,122 @@
+@extends('layouts.public')
+
+@section('title', 'Pembayaran Berhasil - TheSkills')
+
+@section('content')
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <!-- Success Icon -->
+            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+                <svg class="h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            
+            <!-- Success Message -->
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Pembayaran Berhasil!
+            </h2>
+            
+            <p class="text-lg text-gray-600 mb-8">
+                Terima kasih! Pembayaran Anda telah berhasil diproses.
+            </p>
+            
+            <!-- Transaction Info -->
+            @if(request('order_id'))
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Detail Transaksi</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Order ID:</span>
+                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{{ request('order_id') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Status:</span>
+                        <span class="text-green-600 font-semibold">Berhasil</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Waktu:</span>
+                        <span class="text-gray-900">{{ now()->format('d M Y, H:i') }}</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                @auth
+                    <!-- User is logged in -->
+                    <a href="{{ route('student.dashboard') }}" 
+                       class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
+                        </svg>
+                        Lihat Dashboard
+                    </a>
+                    
+                    <a href="{{ route('student.courses.index') }}" 
+                       class="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        Lihat Kursus Saya
+                    </a>
+                @else
+                    <!-- User is not logged in -->
+                    <a href="{{ route('login') }}" 
+                       class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                        </svg>
+                        Login untuk Mengakses Kursus
+                    </a>
+                    
+                    <a href="{{ route('welcome') }}" 
+                       class="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Kembali ke Beranda
+                    </a>
+                @endauth
+            </div>
+            
+            <!-- Additional Info -->
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-500">
+                    Jika Anda memiliki pertanyaan, silakan 
+                    <a href="{{ route('contact') }}" class="text-blue-600 hover:text-blue-500 font-medium">
+                        hubungi tim support kami
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto redirect after 10 seconds if not logged in -->
+@guest
+<script>
+    setTimeout(function() {
+        window.location.href = '{{ route("login") }}';
+    }, 10000);
+    
+    // Show countdown
+    let countdown = 10;
+    const countdownElement = document.createElement('div');
+    countdownElement.className = 'mt-4 text-sm text-gray-500';
+    countdownElement.innerHTML = 'Anda akan diarahkan ke halaman login dalam <span id="countdown">10</span> detik...';
+    document.querySelector('.text-center').appendChild(countdownElement);
+    
+    const countdownInterval = setInterval(function() {
+        countdown--;
+        document.getElementById('countdown').textContent = countdown;
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+        }
+    }, 1000);
+</script>
+@endguest
+@endsection
