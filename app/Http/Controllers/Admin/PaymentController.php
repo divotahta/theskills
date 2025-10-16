@@ -32,9 +32,9 @@ class PaymentController extends Controller
     public function updateStatus(Request $request, Payment $payment)
     {
         // Only allow in local environment
-        if (app()->environment('production')) {
-            return response()->json(['error' => 'Not allowed in production'], 403);
-        }
+        // if (app()->environment('production')) {
+        //     return response()->json(['error' => 'Not allowed in production'], 403);
+        // }
 
         $request->validate([
             'status' => 'required|in:pending,completed,failed'
