@@ -1,0 +1,35 @@
+# =============================================================================
+# MIDTRANS GITIGNORE
+# =============================================================================
+# 
+# Add these lines to your .gitignore file to prevent
+# production keys from being committed to version control
+#
+# =============================================================================
+
+# Environment files with production keys
+.env.production
+.env.prod
+.env.midtrans.production
+
+# Backup files
+.env.backup*
+.env.*.backup
+
+# Log files
+storage/logs/midtrans*.log
+storage/logs/payment*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# =============================================================================
+# INSTRUCTIONS:
+# =============================================================================
+# 
+# 1. Copy these lines to your main .gitignore file
+# 2. Or include this file in your .gitignore:
+#    include .gitignore.midtrans
+#
+# =============================================================================

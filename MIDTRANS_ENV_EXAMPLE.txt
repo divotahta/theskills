@@ -1,0 +1,75 @@
+# =============================================================================
+# MIDTRANS CONFIGURATION
+# =============================================================================
+# 
+# IMPORTANT: 
+# - Copy this file to .env and update with your actual keys
+# - Never commit production keys to version control
+# - Always test in sandbox mode first
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# SANDBOX MODE (Default - Safe for Development)
+# -----------------------------------------------------------------------------
+MIDTRANS_SERVER_KEY=Mid-server-8hEYF1IVzpkT2VU2satq2r5o
+MIDTRANS_CLIENT_KEY=Mid-client-ughTgkx6m733ZUOl
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_IS_SANITIZED=true
+MIDTRANS_IS_3DS=true
+MIDTRANS_MERCHANT_ID=G388833137
+
+# -----------------------------------------------------------------------------
+# PRODUCTION MODE (Update with your production keys)
+# -----------------------------------------------------------------------------
+# Uncomment and update these when ready for production:
+# MIDTRANS_SERVER_KEY=Mid-server-YOUR_PRODUCTION_SERVER_KEY
+# MIDTRANS_CLIENT_KEY=Mid-client-YOUR_PRODUCTION_CLIENT_KEY
+# MIDTRANS_IS_PRODUCTION=true
+# MIDTRANS_IS_SANITIZED=true
+# MIDTRANS_IS_3DS=true
+# MIDTRANS_MERCHANT_ID=YOUR_PRODUCTION_MERCHANT_ID
+
+# -----------------------------------------------------------------------------
+# PRODUCTION KEYS (Alternative - Use separate variables)
+# -----------------------------------------------------------------------------
+# If you prefer to keep production keys separate:
+# MIDTRANS_PRODUCTION_SERVER_KEY=Mid-server-YOUR_PRODUCTION_SERVER_KEY
+# MIDTRANS_PRODUCTION_CLIENT_KEY=Mid-client-YOUR_PRODUCTION_CLIENT_KEY
+# MIDTRANS_PRODUCTION_MERCHANT_ID=YOUR_PRODUCTION_MERCHANT_ID
+
+# -----------------------------------------------------------------------------
+# CALLBACK URLs (Optional - Defaults will be used if not set)
+# -----------------------------------------------------------------------------
+# MIDTRANS_FINISH_URL=https://yourdomain.com/student/payment/success
+# MIDTRANS_UNFINISH_URL=https://yourdomain.com/student/payment/failure
+# MIDTRANS_ERROR_URL=https://yourdomain.com/student/payment/failure
+# MIDTRANS_NOTIFICATION_URL=https://yourdomain.com/payment/notification
+
+# -----------------------------------------------------------------------------
+# LOGGING (Optional - Defaults will be used if not set)
+# -----------------------------------------------------------------------------
+# MIDTRANS_LOGGING_ENABLED=true
+# MIDTRANS_LOG_LEVEL=info
+# MIDTRANS_LOG_CHANNEL=single
+
+# =============================================================================
+# HOW TO USE:
+# =============================================================================
+#
+# 1. SANDBOX MODE (Current - Safe for testing):
+#    - Keep MIDTRANS_IS_PRODUCTION=false
+#    - Use sandbox keys (already set above)
+#    - Test with test cards
+#
+# 2. PRODUCTION MODE:
+#    - Change MIDTRANS_IS_PRODUCTION=true
+#    - Update server_key, client_key, merchant_id with production values
+#    - Test thoroughly before going live
+#
+# 3. SWITCHING MODES:
+#    - Use script: php scripts/midtrans-switch.php sandbox
+#    - Use script: php scripts/midtrans-switch.php production
+#    - Or manually update .env file
+#
+# =============================================================================
