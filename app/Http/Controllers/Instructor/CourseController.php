@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\MessageBag;
 
 class CourseController extends Controller
 {
@@ -204,15 +205,11 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        // Ensure instructor can only edit their own courses
-        if ($course->instructor_id !== Auth::id()) {
-            abort(403, 'You can only edit your own courses.');
-        }
-
         $categories = Category::all();
+        $instructors = User::where('role', 'instructor')->get();
         $courseLevels = CourseLevel::active()->ordered()->get();
 
-        return view('instructor.courses-edit-tutor', compact('course', 'categories', 'courseLevels'));
+        return view('instructor.courses-edit-tutor', compact('course', 'categories', 'instructors', 'courseLevels'));
     }
 
     /**
@@ -220,20 +217,14 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        // Ensure instructor can only update their own courses
-        if ($course->instructor_id !== Auth::id()) {
-            abort(403, 'You can only update your own courses.');
-        }
-
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'instructor_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
-            'course_level_id' => 'required|exists:course_levels,id',
             'price' => 'required|numeric|min:0',
             'max_students' => 'nullable|integer|min:1',
             'is_public' => 'boolean',
-            'is_featured' => 'boolean',
             'video_type' => 'required|in:youtube,vimeo,native',
             'video_url' => 'required|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
