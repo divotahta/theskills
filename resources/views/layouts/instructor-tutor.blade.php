@@ -29,11 +29,12 @@
                     <!-- Logo and Navigation -->
                     <div class="flex">
                         <!-- Logo -->
-                        <div class="flex-shrink-0 flex items-center">
+                        <a href="{{ route('instructor.dashboard') }}" class="flex-shrink-0 flex items-center">
+
                             <img src="{{ asset('images/logo.png') }}" alt="TheSkills" class="h-8 w-8">
                             <span class="ml-2 text-xl font-bold text-gray-900">TheSkills</span>
-                        </div>
 
+                        </a>
                         <!-- Desktop Navigation -->
                         <div class="hidden md:ml-8 md:flex md:space-x-8">
                             <a href="{{ route('instructor.dashboard') }}"
@@ -201,8 +202,7 @@
                                                 this.notifications = [];
                                             });
                                     }
-                                }"
-                                    x-init="loadNotifications()">
+                                }" x-init="loadNotifications()">
                                     <template x-for="notification in notifications" :key="notification.id">
                                         <div class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                                             @click="window.location.href = notification.url">

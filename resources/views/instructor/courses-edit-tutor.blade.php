@@ -1,8 +1,21 @@
 @extends('layouts.instructor-tutor')
 
 @section('content')
-<div x-data="{ mobileMenuOpen: false }">
-    <!-- Page Header -->
+ <div x-data="{ mobileMenuOpen: false }">
+     <!-- Alert Messages -->
+     @if(session('success'))
+         <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+             <span class="block sm:inline">{{ session('success') }}</span>
+         </div>
+     @endif
+
+     @if(session('error'))
+         <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+             <span class="block sm:inline">{{ session('error') }}</span>
+         </div>
+     @endif
+
+     <!-- Page Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div>
@@ -261,7 +274,7 @@
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                             <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                         </div>
                     </div>
                     @error('thumbnail')
@@ -337,11 +350,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Validate file size (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('File size must be less than 2MB.');
-                return;
-            }
+             // Validate file size (10MB)
+             if (file.size > 10 * 1024 * 1024) {
+                 alert('File size must be less than 10MB.');
+                 return;
+             }
             
             // Create preview
             const reader = new FileReader();

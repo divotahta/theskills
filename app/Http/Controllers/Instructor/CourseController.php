@@ -41,7 +41,7 @@ class CourseController extends Controller
             'is_featured' => 'boolean',
             'video_type' => 'required|in:youtube,vimeo,native',
             'video_url' => 'required|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $data = $request->all();
@@ -227,7 +227,7 @@ class CourseController extends Controller
             'is_public' => 'boolean',
             'video_type' => 'required|in:youtube,vimeo,native',
             'video_url' => 'required|url',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         try {
@@ -286,9 +286,18 @@ class CourseController extends Controller
                 ->route('instructor.courses.index')
                 ->with('success', 'Course updated successfully!');
         } catch (\Exception $e) {
+            Log::error('Course update failed: ' . $e->getMessage());
+            
+            // Check for specific error types
+            if (strpos($e->getMessage(), '413') !== false || strpos($e->getMessage(), 'Request Entity Too Large') !== false) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'File yang diupload terlalu besar. Maksimal 10MB.');
+            }
+            
             return back()
                 ->withInput()
-                ->with('error', 'Failed to update course. Please try again.');
+                ->with('error', 'Gagal memperbarui kursus. Silakan coba lagi.');
         }
     }
 

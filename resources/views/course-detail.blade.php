@@ -138,9 +138,9 @@
                                                 <p class="text-sm text-gray-600">{{ $content->description }}</p>
                                             </div>
                                         </div>
-                                        <div class="text-sm text-gray-500">
+                                        {{-- <div class="text-sm text-gray-500">
                                             {{ $content->duration ? $content->duration . ' min' : 'N/A' }}
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             @endforeach

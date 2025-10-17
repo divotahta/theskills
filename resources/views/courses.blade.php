@@ -62,8 +62,9 @@
     <!-- Courses Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($courses as $course)
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
+                <div  class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
                     <!-- Course Thumbnail -->
+                    <a href="{{ route('courses.show', $course->id) }}">
                     <div class="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
                         @if($course->thumbnail)
                             <img src="{{ asset('storage/' . $course->thumbnail) }}" 
